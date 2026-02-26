@@ -1,0 +1,145 @@
+{% extends 'users/layout.html' %}
+{% block title %} VoteSphere | Registration {% endblock %}
+
+{% block form %}
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <img src="https://images.unsplash.com/photo-1540910419892-f39063bc3d6b?q=80&w=2070&auto=format&fit=crop" 
+             class="w-full h-full object-cover blur-xl scale-110 opacity-30 dark:opacity-10 transition-opacity duration-500" 
+             alt="Background">
+        <div class="absolute inset-0 bg-gradient-to-br from-brand-600/20 via-transparent to-purple-600/20 backdrop-blur-3xl" ></div>
+    </div>
+
+    <button onclick="toggleTheme()" class="fixed top-6 right-6 z-50 p-3 rounded-2xl bg-white/80 dark:bg-slate-800/80 backdrop-blur-lg border border-slate-200 dark:border-slate-700 shadow-xl hover:rotate-12 transition-all text-slate-600 dark:text-yellow-400">
+        <i data-lucide="sun" class="hidden dark:block w-5 h-5"></i>
+        <i data-lucide="moon" class="block dark:hidden w-5 h-5"></i>
+    </button>
+
+    <main class="w-full max-w-6xl grid grid-cols-1 lg:grid-cols-12 bg-white/40 dark:bg-slate-900/40 backdrop-blur-2xl rounded-[2.5rem] border border-white/40 dark:border-slate-800/50 shadow-2xl overflow-hidden transition-all duration-500">
+        
+        <div class="relative hidden lg:flex lg:col-span-5 flex-col justify-between p-12 bg-brand-600/10 dark:bg-brand-600/5 border-r border-white/20">
+            <div class="flex items-center gap-3">
+                <div class="bg-brand-600 p-2 rounded-xl text-white shadow-lg shadow-brand-600/30">
+                    <i data-lucide="vote" class="w-6 h-6"></i>
+                </div>
+                <span class="text-2xl font-black tracking-tighter bg-gradient-to-r from-brand-600 to-indigo-400 bg-clip-text text-transparent">VoteSphere</span>
+            </div>
+
+            <div class="relative z-10">
+                <h2 class="text-5xl font-black leading-[1.1] mb-6 dark:text-white">Shape the <br><span class="text-brand-600">Future</span> Today.</h2>
+                <p class="text-slate-500 dark:text-slate-400 text-lg font-medium leading-relaxed">
+                    A secure, transparent, and decentralized platform for modern democracy.
+                </p>
+            </div>
+
+            <div class="flex items-center gap-4 text-xs font-bold uppercase tracking-widest text-slate-400">
+                <span>Privacy First</span>
+                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                <span>Encrypted</span>
+                <span class="w-1 h-1 rounded-full bg-slate-300"></span>
+                <span>Open Source</span>
+            </div>
+        </div>
+
+        <div class="lg:col-span-7 p-8 lg:p-14 bg-white/60 dark:bg-slate-900/60 backdrop-blur-md transition-colors duration-500">
+            <div class="max-w-2xl mx-auto">
+                <div class="mb-10">
+                    <h1 class="text-3xl font-black tracking-tight mb-2">Create Account</h1>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Please enter your details to register.</p>
+                </div>
+
+                <form class="space-y-4" method="POST">
+                    {% csrf_token %}
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-1">First Name</label>
+                            <input type="text" name="FirstName" placeholder="Jane" class="w-full px-5 py-3 bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-4 focus:ring-brand-600/10 focus:border-brand-600 outline-none transition-all dark:text-white">
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-1">Last Name</label>
+                            <input type="text" name="LastName" placeholder="Doe" class="w-full px-5 py-3 bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-4 focus:ring-brand-600/10 focus:border-brand-600 outline-none transition-all dark:text-white">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-1">Username</label>
+                            <div class="relative">
+                                <i data-lucide="at-sign" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                <input type="text" name="username" placeholder="janedoe" class="w-full pl-11 pr-5 py-3 bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-4 focus:ring-brand-600/10 focus:border-brand-600 outline-none transition-all dark:text-white">
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-1">Email</label>
+                            <div class="relative">
+                                <i data-lucide="mail" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                <input type="email" name="email" placeholder="jane@example.com" class="w-full pl-11 pr-5 py-3 bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-4 focus:ring-brand-600/10 focus:border-brand-600 outline-none transition-all dark:text-white">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-1">Password</label>
+                            <div class="relative">
+                                <i data-lucide="lock" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                                <input type="password" name="password" placeholder="••••••••" class="w-full pl-11 pr-5 py-3 bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-4 focus:ring-brand-600/10 focus:border-brand-600 outline-none transition-all dark:text-white">
+                            </div>
+                        </div>
+                        <div class="space-y-1.5">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-1">Gender</label>
+                            <div class="relative">
+                                <i data-lucide="users" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                                <select name="gender" class="w-full pl-11 pr-10 py-3 bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-4 focus:ring-brand-600/10 focus:border-brand-600 outline-none transition-all appearance-none cursor-pointer dark:text-white">
+                                    <option value="" disabled selected>Select Gender</option>
+                                    <option value="male">Male</option>
+                                    <option value="Female">Female</option>
+                                    <option value="Female">Other</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 ml-1">Profession</label>
+                        <div class="relative">
+                            <i data-lucide="briefcase" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+                            <input type="text" name="profession" placeholder="e.g. Political Scientist" class="w-full pl-11 pr-5 py-3 bg-white/50 dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm focus:ring-4 focus:ring-brand-600/10 focus:border-brand-600 outline-none transition-all dark:text-white">
+                        </div>
+                    </div>
+
+                    <div class="pt-6">
+                        <button class="w-full bg-brand-600 hover:bg-brand-700 text-white py-4 rounded-2xl font-bold text-sm shadow-xl shadow-brand-600/20 transition-all transform hover:-translate-y-1 active:scale-[0.98]">
+                            Create My Account
+                        </button>
+                    </div>
+                </form>
+
+                <div class="mt-8">
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="h-px flex-grow bg-slate-200 dark:bg-slate-800"></div>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest whitespace-nowrap">Quick connect</span>
+                        <div class="h-px flex-grow bg-slate-200 dark:bg-slate-800"></div>
+                    </div>
+                    <div class="flex gap-4">
+                        <button class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 hover:bg-white dark:hover:bg-slate-800 transition-all text-xs font-bold dark:text-white">
+                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.66l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+                             Google
+                        </button>
+                        <button type="" class="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 hover:bg-white dark:hover:bg-slate-800 transition-all text-xs font-bold dark:text-white">
+                            <i data-lucide="github" class="w-4 h-4"></i>
+                            GitHub
+                        </button>
+                    </div>
+                </div>
+
+                <p class="text-center mt-8 text-xs text-slate-500 font-medium">
+                    By signing up, you agree to our 
+                    <a href="#" class="text-brand-600 font-bold hover:underline">Terms</a> & 
+                    <a href="#" class="text-brand-600 font-bold hover:underline">Privacy Policy</a>
+                </p>
+            </div>
+        </div>
+    </main>
+
+{% endblock %}

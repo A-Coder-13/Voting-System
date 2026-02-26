@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteSphere | Create Poll</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 
+                            400: '#818cf8', // Light Indigo
+                            500: '#6366f1', // Main Indigo
+                            600: '#4f46e5', // Darker Indigo
+                        },
+                        violet: '#8b5cf6',
+                        darkest: '#020617'
+                    },
+                    animation: {
+                        'border-glow': 'border-glow 4s ease infinite',
+                    },
+                    keyframes: {
+                        'border-glow': {
+                            '0%, 100%': { 'border-color': 'rgba(99, 102, 241, 0.3)', 'box-shadow': '0 0 15px rgba(99, 102, 241, 0.1)' },
+                            '50%': { 'border-color': 'rgba(139, 92, 246, 0.7)', 'box-shadow': '0 0 30px rgba(139, 92, 246, 0.3)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .glow-card {
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            animation: border-glow 4s ease infinite;
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
+        
+        /* Glassmorphism utility */
+        .glass {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-darkest text-slate-800 dark:text-slate-200 transition-colors duration-500 min-h-screen p-4 md:p-8 flex items-center justify-center">
+
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute -top-24 -left-24 w-96 h-96 bg-brand-600/20 rounded-full blur-[120px]"></div>
+        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-violet/20 rounded-full blur-[120px]"></div>
+    </div>
+
+    <div class="max-w-3xl w-full mx-auto relative">
+        <div class="glow-card glass rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+            
+            <header class="flex items-start justify-between mb-10">
+                <div class="flex items-center gap-5">
+                    <div class="w-14 h-14 bg-gradient-to-br from-brand-500 to-violet rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.5)] transform hover:rotate-6 transition-transform">
+                        <i data-lucide="plus-circle" class="w-7 h-7 text-white"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-3xl font-black tracking-tight text-white">Create New Poll</h1>
+                        <p class="text-[10px] text-brand-400 font-bold uppercase tracking-[0.2em]">Question Designer</p>
+                    </div>
+                </div>
+                <a href="dashboard.html" class="text-xs font-bold text-slate-500 hover:text-brand-400 transition-colors uppercase tracking-widest">Cancel</a>
+            </header>
+
+            <form class="space-y-8" onsubmit="event.preventDefault()">
+                <div class="space-y-6">
+                    <div class="group">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">01. The Question</label>
+                        <input type="text" placeholder="What is your favorite VoteSphere feature?" 
+                            class="w-full bg-slate-950/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all font-medium">
+                    </div>
+
+                    <div class="group">
+                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">02. Context / Description</label>
+                        <textarea rows="2" placeholder="Provide more context for your voters..." 
+                            class="w-full bg-slate-950/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-sm"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">03. Expiry Date</label>
+                            <div class="relative">
+                                <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400"></i>
+                                <input type="date" class="w-full pl-12 pr-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-2xl text-sm text-white outline-none focus:border-brand-500 transition-all">
+                            </div>
+                        </div>
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">04. Category</label>
+                            <div class="relative">
+                                <i data-lucide="tag" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400"></i>
+                                <select class="w-full pl-12 pr-10 py-3.5 bg-slate-950/50 border border-slate-800 rounded-2xl text-sm text-white outline-none focus:border-brand-500 appearance-none cursor-pointer">
+                                    <option>General</option>
+                                    <option>Technology</option>
+                                    <option>Community</option>
+                                    <option>Governance</option>
+                                </select>
+                                <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="border-slate-800 opacity-50">
+
+                <div class="space-y-5">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-sm font-black uppercase tracking-widest text-white">Poll Options</h3>
+                        <button type="button" onclick="addOption()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-brand-500/20">
+                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Item
+                        </button>
+                    </div>
+
+                    <div id="options-container" class="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+                        <div class="option-card relative p-5 bg-white/5 border border-dashed border-brand-500/30 rounded-[1.5rem] group transition-all hover:bg-white/10 hover:border-brand-500/60">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[9px] font-black text-brand-400 uppercase tracking-[0.2em]">Option Config</span>
+                                <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-600 cursor-move"></i>
+                            </div>
+                            <input type="text" placeholder="Title of the option" class="w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
+                            <input type="text" placeholder="Explain this choice to voters..." class="w-full bg-transparent text-xs text-slate-400 outline-none">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full group relative flex items-center justify-center gap-3 bg-gradient-to-r from-brand-600 to-violet hover:from-brand-500 hover:to-brand-400 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_10px_30px_rgba(99,102,241,0.3)] active:scale-[0.98]">
+                    <i data-lucide="zap" class="w-5 h-5 fill-white"></i>
+                    Deploy Poll to Sphere
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+
+        function addOption() {
+            const container = document.getElementById('options-container');
+            const div = document.createElement('div');
+            div.className = "option-card relative p-5 bg-white/5 border border-dashed border-brand-500/30 rounded-[1.5rem] animate-in slide-in-from-bottom-2 duration-300 group transition-all hover:bg-white/10 hover:border-brand-500/60";
+            
+            div.innerHTML = `
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-[9px] font-black text-brand-400 uppercase tracking-[0.2em]">New Option</span>
+                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-slate-500 hover:text-red-400 transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                    </button>
+                </div>
+                <input type="text" placeholder="Title of the option" class="w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
+                <input type="text" placeholder="Explain this choice..." class="w-full bg-transparent text-xs text-slate-400 outline-none">
+            `;
+            
+            container.appendChild(div);
+            lucide.createIcons();
+            container.scrollTop = container.scrollHeight;
+        }
+    </script>
+</body>
+</html>
