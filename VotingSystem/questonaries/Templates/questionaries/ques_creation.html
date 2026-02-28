@@ -13,9 +13,9 @@
                 extend: {
                     colors: {
                         brand: { 
-                            400: '#818cf8', // Light Indigo
-                            500: '#6366f1', // Main Indigo
-                            600: '#4f46e5', // Darker Indigo
+                            400: '#818cf8',
+                            500: '#6366f1',
+                            600: '#4f46e5',
                         },
                         violet: '#8b5cf6',
                         darkest: '#020617'
@@ -42,7 +42,6 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
         
-        /* Glassmorphism utility */
         .glass {
             background: rgba(15, 23, 42, 0.6);
             backdrop-filter: blur(12px);
@@ -72,18 +71,19 @@
                 <a href="dashboard.html" class="text-xs font-bold text-slate-500 hover:text-brand-400 transition-colors uppercase tracking-widest">Cancel</a>
             </header>
 
-            <form class="space-y-8" onsubmit="event.preventDefault()">
+            <form class="space-y-8" id="pollForm" method="POST">
+                {% csrf_token %} 
                 <div class="space-y-6">
                     <div class="group">
                         <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">01. The Question</label>
                         <input type="text" placeholder="What is your favorite VoteSphere feature?" 
-                            class="w-full bg-slate-950/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all font-medium">
+                           name="ques" class="w-full bg-slate-950/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all font-medium">
                     </div>
 
                     <div class="group">
                         <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">02. Context / Description</label>
                         <textarea rows="2" placeholder="Provide more context for your voters..." 
-                            class="w-full bg-slate-950/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-sm"></textarea>
+                           name="q_desc" class="w-full bg-slate-950/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-sm"></textarea>
                     </div>
 
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -91,18 +91,18 @@
                             <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">03. Expiry Date</label>
                             <div class="relative">
                                 <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400"></i>
-                                <input type="date" class="w-full pl-12 pr-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-2xl text-sm text-white outline-none focus:border-brand-500 transition-all">
+                                <input type="date" name="ex_date" class="w-full pl-12 pr-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-2xl text-sm text-white outline-none focus:border-brand-500 transition-all">
                             </div>
                         </div>
                         <div class="space-y-2">
                             <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">04. Category</label>
                             <div class="relative">
                                 <i data-lucide="tag" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400"></i>
-                                <select class="w-full pl-12 pr-10 py-3.5 bg-slate-950/50 border border-slate-800 rounded-2xl text-sm text-white outline-none focus:border-brand-500 appearance-none cursor-pointer">
-                                    <option>General</option>
-                                    <option>Technology</option>
-                                    <option>Community</option>
-                                    <option>Governance</option>
+                                <select name="cat" class="w-full pl-12 pr-10 py-3.5 bg-slate-950/50 border border-slate-800 rounded-2xl text-sm text-white outline-none focus:border-brand-500 appearance-none cursor-pointer">
+                                    <option value="general">General</option>
+                                    <option value="tech">Technology</option>
+                                    <option value="community">Community</option>
+                                    <option value="gov">Governance</option>
                                 </select>
                                 <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none"></i>
                             </div>
@@ -126,11 +126,14 @@
                                 <span class="text-[9px] font-black text-brand-400 uppercase tracking-[0.2em]">Option Config</span>
                                 <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-600 cursor-move"></i>
                             </div>
-                            <input type="text" placeholder="Title of the option" class="w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
-                            <input type="text" placeholder="Explain this choice to voters..." class="w-full bg-transparent text-xs text-slate-400 outline-none">
+                            <input type="text" placeholder="Title of the option" class="opt w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
+                            <input type="text" placeholder="Explain this choice to voters..." class="opt_dsc w-full bg-transparent text-xs text-slate-400 outline-none">
                         </div>
                     </div>
                 </div>
+
+                <input name="opt_hidden" id="opt_hidden" type="hidden">
+                <input name="opt_dsc_hidden" id="opt_dsc_hidden" type="hidden">
 
                 <button type="submit" class="w-full group relative flex items-center justify-center gap-3 bg-gradient-to-r from-brand-600 to-violet hover:from-brand-500 hover:to-brand-400 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_10px_30px_rgba(99,102,241,0.3)] active:scale-[0.98]">
                     <i data-lucide="zap" class="w-5 h-5 fill-white"></i>
@@ -155,14 +158,36 @@
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <input type="text" placeholder="Title of the option" class="w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
-                <input type="text" placeholder="Explain this choice..." class="w-full bg-transparent text-xs text-slate-400 outline-none">
+                <input type="text" placeholder="Title of the option" class="opt w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
+                <input type="text" placeholder="Explain this choice..." class="opt_dsc w-full bg-transparent text-xs text-slate-400 outline-none">
             `;
             
             container.appendChild(div);
             lucide.createIcons();
             container.scrollTop = container.scrollHeight;
         }
+
+        document.getElementById("pollForm").addEventListener("submit", function(e) {
+            const titles = [];
+            const descriptions = [];
+
+            // Corrected selectors with dots for classes
+            document.querySelectorAll(".opt").forEach(input => {
+                if(input.value.trim() !== "") {
+                    titles.push(input.value.trim());
+                }
+            });
+
+            document.querySelectorAll(".opt_dsc").forEach(input => {
+                // We push even empty descriptions to keep indexes matched with titles
+                descriptions.push(input.value.trim() || " ");
+            });
+
+            // Joining and assigning to correct hidden fields
+            document.getElementById("opt_hidden").value = titles.join(",");
+            document.getElementById("opt_dsc_hidden").value = descriptions.join(",");
+        });
+        
     </script>
 </body>
 </html>

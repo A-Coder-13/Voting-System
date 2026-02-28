@@ -10,7 +10,6 @@ class Question(models.Model):
     q_desc = models.TextField(null=True)
     expiry = models.DateField()
     u_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    c_id = models.ForeignKey(Category,on_delete=models.CASCADE)
     created_at= models.DateTimeField(auto_now_add=True)
 
 
