@@ -71,7 +71,7 @@
                 <a href="dashboard.html" class="text-xs font-bold text-slate-500 hover:text-brand-400 transition-colors uppercase tracking-widest">Cancel</a>
             </header>
 
-            <form class="space-y-8" id="pollForm" method="POST">
+            <form class="space-y-8" id="form" method="POST">
                 {% csrf_token %} 
                 <div class="space-y-6">
                     <div class="group">
@@ -167,27 +167,17 @@
             container.scrollTop = container.scrollHeight;
         }
 
-        document.getElementById("pollForm").addEventListener("submit", function(e) {
-            const titles = [];
-            const descriptions = [];
-
-            // Corrected selectors with dots for classes
-            document.querySelectorAll(".opt").forEach(input => {
-                if(input.value.trim() !== "") {
-                    titles.push(input.value.trim());
-                }
-            });
-
-            document.querySelectorAll(".opt_dsc").forEach(input => {
-                // We push even empty descriptions to keep indexes matched with titles
-                descriptions.push(input.value.trim() || " ");
-            });
-
-            // Joining and assigning to correct hidden fields
-            document.getElementById("opt_hidden").value = titles.join(",");
-            document.getElementById("opt_dsc_hidden").value = descriptions.join(",");
-        });
         
+        document.getElementById('form').addEventListener('submit',function(e){
+            document.querySelectorAll('.opt').forEach(input => {
+                document.getElementById('opt_hidden').value += input.value + ",";
+            })
+            console.log(document.getElementById('opt_hidden').value)
+
+            document.querySelectorAll('.opt_dsc').forEach(input => {
+                document.getElementById("opt_dsc_hidden").value += input.value + ",";
+            })
+        })
     </script>
 </body>
 </html>

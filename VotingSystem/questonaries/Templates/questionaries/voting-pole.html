@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VoteSphere | Cast Your Vote</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 600: '#4f46e5', 700: '#4338ca' }
+                    }
+                }
+            }
+        }
+
+        function updateTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        updateTheme();
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-500 min-h-screen font-sans">
+
+    <!-- Header -->
+    <header class="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
+            <a href="feeds.html" class="flex items-center gap-2 group text-slate-500 hover:text-brand-600 transition-colors">
+                <i data-lucide="arrow-left" class="w-4 h-4"></i>
+                <span class="text-xs font-bold">Back to Feed</span>
+            </a>
+            
+            <div class="flex items-center gap-4">
+                <!-- Theme Changer -->
+                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-brand-600 transition-colors">
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+                </button>
+
+                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-purple-500 p-0.5">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full rounded-full bg-white dark:bg-slate-900" alt="Avatar">
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+        
+        <!-- Main Voting Area (Left 2 Columns) -->
+        <div class="lg:col-span-2 space-y-8">
+            
+            <!-- Question Header -->
+            <div class="space-y-4">
+                <div class="flex items-center gap-2">
+                    <span class="bg-brand-600/10 text-brand-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Technology</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase">ID: #Q-8821</span>
+                </div>
+                <h1 class="text-3xl font-black tracking-tight leading-tight">Which programming language is best for Artificial Intelligence in 2024?</h1>
+                <p class="text-slate-500 dark:text-slate-400 leading-relaxed">
+                    As AI continues to evolve rapidly with LLMs and Generative AI, the choice of stack is critical. We are evaluating Python's ecosystem against the performance of Mojo and the safety of Rust. What is your go-to for production environment deployments in the current landscape?
+                </p>
+            </div>
+
+            <!-- Options Form -->
+            <div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xl">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Select an Option</h3>
+                
+                <form id="voteForm" class="space-y-4">
+                    <!-- Option 1 -->
+                    <label class="block relative group cursor-pointer">
+                        <input type="radio" name="poll" class="peer sr-only">
+                        <div class="p-5 rounded-2xl border-2 border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 peer-checked:border-brand-600 peer-checked:bg-brand-600/5 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                                <span class="text-sm font-bold">Python (Standard)</span>
+                            </div>
+                            <i data-lucide="info" class="w-4 h-4 text-slate-300"></i>
+                        </div>
+                    </label>
+
+                    <!-- Option 2 -->
+                    <label class="block relative group cursor-pointer">
+                        <input type="radio" name="poll" class="peer sr-only">
+                        <div class="p-5 rounded-2xl border-2 border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 peer-checked:border-brand-600 peer-checked:bg-brand-600/5 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                                <span class="text-sm font-bold">Rust (Performance/Safety)</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <!-- Option 3 -->
+                    <label class="block relative group cursor-pointer">
+                        <input type="radio" name="poll" class="peer sr-only">
+                        <div class="p-5 rounded-2xl border-2 border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 peer-checked:border-brand-600 peer-checked:bg-brand-600/5 transition-all flex items-center justify-between">
+                            <div class="flex items-center gap-4">
+                                <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+                                </div>
+                                <span class="text-sm font-bold">Mojo (New Gen)</span>
+                            </div>
+                        </div>
+                    </label>
+
+                    <button type="button" onclick="this.innerHTML='Vote Cast! ✓'; this.classList.add('bg-emerald-600')" class="w-full mt-6 bg-brand-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-600/20 hover:scale-[1.01] transition-all">
+                        Cast Your Vote
+                    </button>
+                </form>
+            </div>
+
+            <!-- Comments Section -->
+            <div class="space-y-6">
+                <div class="flex items-center justify-between">
+                    <h3 class="text-lg font-black tracking-tight">Discussion (24)</h3>
+                    <select class="text-xs font-bold bg-transparent outline-none text-slate-400">
+                        <option>Top Comments</option>
+                        <option>Newest</option>
+                    </select>
+                </div>
+
+                <div class="flex gap-4">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-10 h-10 rounded-xl bg-brand-100" alt="Me">
+                    <div class="flex-grow">
+                        <textarea placeholder="Share your thoughts on this poll..." class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-600/20 transition-all outline-none min-h-[100px]"></textarea>
+                        <div class="flex justify-end mt-2">
+                            <button class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-2 rounded-xl text-xs font-bold">Post Comment</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sample Comment -->
+                <div class="space-y-6 pt-4">
+                    <div class="flex gap-4">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Anna" class="w-10 h-10 rounded-xl bg-pink-100" alt="Anna">
+                        <div class="space-y-2">
+                            <div class="flex items-center gap-2">
+                                <span class="text-xs font-bold">Anna Smith</span>
+                                <span class="text-[10px] text-slate-400 font-medium">1 hour ago</span>
+                            </div>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed">
+                                Python still wins for AI because of the libraries (NumPy, PyTorch, Jax). Until Mojo has full library compatibility, Python isn't going anywhere.
+                            </p>
+                            <div class="flex items-center gap-4 text-[10px] font-bold text-slate-400">
+                                <button class="hover:text-brand-600">Reply</button>
+                                <button class="hover:text-brand-600">Like</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Right Sidebar (Meta Info) -->
+        <aside class="space-y-8">
+            <!-- Stats Card -->
+            <div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] p-6 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-6">Poll Information</h3>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-brand-600/10 rounded-lg text-brand-600">
+                                <i data-lucide="clock" class="w-4 h-4"></i>
+                            </div>
+                            <span class="text-[11px] font-bold text-slate-500">Time Left</span>
+                        </div>
+                        <span class="text-xs font-black">2d 14h 05m</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-emerald-600/10 rounded-lg text-emerald-600">
+                                <i data-lucide="users" class="w-4 h-4"></i>
+                            </div>
+                            <span class="text-[11px] font-bold text-slate-500">Total Votes</span>
+                        </div>
+                        <span class="text-xs font-black">2,450</span>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-3">
+                            <div class="p-2 bg-purple-600/10 rounded-lg text-purple-600">
+                                <i data-lucide="share-2" class="w-4 h-4"></i>
+                            </div>
+                            <span class="text-[11px] font-bold text-slate-500">Shares</span>
+                        </div>
+                        <span class="text-xs font-black">152</span>
+                    </div>
+                </div>
+
+                <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Posted By</p>
+                    <div class="flex items-center gap-3">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus" class="w-12 h-12 rounded-2xl bg-indigo-100" alt="Marcus">
+                        <div>
+                            <p class="text-sm font-black">Marcus Chen</p>
+                            <p class="text-[10px] text-slate-500 font-bold">@mchen_dev</p>
+                        </div>
+                    </div>
+                    <button class="w-full mt-4 py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Follow Author</button>
+                </div>
+            </div>
+
+            <!-- Share Card -->
+            <div class="bg-gradient-to-br from-brand-600 to-violet-700 rounded-[2.5rem] p-6 text-white shadow-xl shadow-brand-600/20">
+                <h3 class="text-sm font-black mb-2">Help decide!</h3>
+                <p class="text-[11px] text-white/80 leading-relaxed mb-6">Share this poll with your network to get a more accurate community representation.</p>
+                <div class="flex gap-2">
+                    <button class="flex-grow bg-white/20 hover:bg-white/30 backdrop-blur-md p-3 rounded-xl transition-all">
+                        <i data-lucide="twitter" class="w-4 h-4 mx-auto"></i>
+                    </button>
+                    <button class="flex-grow bg-white/20 hover:bg-white/30 backdrop-blur-md p-3 rounded-xl transition-all">
+                        <i data-lucide="facebook" class="w-4 h-4 mx-auto"></i>
+                    </button>
+                    <button class="flex-grow bg-white/20 hover:bg-white/30 backdrop-blur-md p-3 rounded-xl transition-all">
+                        <i data-lucide="link" class="w-4 h-4 mx-auto"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+</html>

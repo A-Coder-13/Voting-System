@@ -15,13 +15,6 @@ def create_question(req):
         user = req.user
 
 
-        opt_data = req.POST.get('opt_hidden', "")
-        opt_dsc_data = req.POST.get('opt_dsc_hidden', "")
-
-
-        option_list = [item.strip() for item in opt_data.split(",") if item.strip()]
-        desc_list = [item.strip() for item in opt_dsc_data.split(",") if item.strip()]
-
         # Create the Question
         question_obj = Question.objects.create(
             ques=ques_text,
@@ -29,6 +22,34 @@ def create_question(req):
             expiry=ex_date,
             u_id=user
         )
+
+
+        opt_data = req.POST.get('opt_hidden', "")
+        opt_dsc_data = req.POST.get('opt_dsc_hidden', "")
+        
+
+        option_list=[]
+        desc_list=[]
+        option = ""
+        opt_dsc = ""
+        for opt in opt_data:
+            if opt != ",":
+                option += opt
+            else:
+                desc_list.append(option)
+                option=""
+        print(option_list)
+
+        for dsc in opt_dsc_data:
+            if dsc != ",":
+                opt_dsc += dsc
+            else:
+                option_list.append(opt_dsc)
+                opt_dsc=""
+        print(desc_list)
+        
+
+
 
         # Create Options
         for title, dsc in zip(option_list, desc_list):
@@ -44,4 +65,16 @@ def create_question(req):
     return render(req, "questionaries/ques_creation.html")
 
 def feed_view(req):
-    return render(req,"questionaries/Feed.html")
+    # print(req.user)
+    feeds = Question.objects.exclude(u_id = req.user)
+    context= {'feeds':feeds}
+    return render(req,"questionaries/Feed.html", context)
+
+
+
+
+
+
+    
+def voting_pole(req):
+    return render(req,"questionaries/voting-pole.html")

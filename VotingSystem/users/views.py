@@ -24,7 +24,7 @@ def reg(req):
         )
 
         Ext_User.objects.create(
-            user=u,
+            user_id=u,
             gender=gender,
             profession=profession
         )
