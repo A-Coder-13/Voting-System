@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,167 +17,262 @@
                             500: '#6366f1',
                             600: '#4f46e5',
                         },
-                        violet: '#8b5cf6',
                         darkest: '#020617'
                     },
                     animation: {
-                        'border-glow': 'border-glow 4s ease infinite',
+                        'pulse-slow': 'pulse 6s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'float': 'float 3s ease-in-out infinite',
                     },
                     keyframes: {
-                        'border-glow': {
-                            '0%, 100%': { 'border-color': 'rgba(99, 102, 241, 0.3)', 'box-shadow': '0 0 15px rgba(99, 102, 241, 0.1)' },
-                            '50%': { 'border-color': 'rgba(139, 92, 246, 0.7)', 'box-shadow': '0 0 30px rgba(139, 92, 246, 0.3)' },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
                         }
                     }
                 }
             }
         }
+
+        function updateTheme() {
+            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        }
+
+        function toggleTheme() {
+            if (document.documentElement.classList.contains('dark')) {
+                document.documentElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                document.documentElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        updateTheme();
     </script>
     <style>
-        .glow-card {
-            border: 1px solid rgba(99, 102, 241, 0.3);
-            animation: border-glow 4s ease infinite;
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
         }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; }
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+        .custom-scrollbar::-webkit-scrollbar { width: 5px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
         
-        .glass {
-            background: rgba(15, 23, 42, 0.6);
-            backdrop-filter: blur(12px);
+        .form-input-focus {
+            @apply focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none transition-all;
         }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-darkest text-slate-800 dark:text-slate-200 transition-colors duration-500 min-h-screen p-4 md:p-8 flex items-center justify-center">
+<body class="bg-slate-50 dark:bg-darkest text-slate-800 dark:text-slate-200 transition-colors duration-500 min-h-screen relative overflow-x-hidden flex flex-col items-center">
 
-    <div class="fixed inset-0 -z-10 overflow-hidden">
-        <div class="absolute -top-24 -left-24 w-96 h-96 bg-brand-600/20 rounded-full blur-[120px]"></div>
-        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-violet/20 rounded-full blur-[120px]"></div>
+    <!-- Background Elements -->
+    <div class="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-600/10 dark:bg-brand-600/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div class="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-purple-600/10 dark:bg-purple-600/20 rounded-full blur-[120px] animate-pulse-slow"></div>
     </div>
 
-    <div class="max-w-3xl w-full mx-auto relative">
-        <div class="glow-card glass rounded-[2.5rem] p-8 md:p-12 shadow-2xl relative overflow-hidden">
+    <!-- Top Navigation / Header -->
+    <nav class="w-full max-w-5xl px-6 h-20 flex items-center justify-between z-50">
+        <div class="flex items-center gap-2">
+            <div class="w-10 h-10 bg-brand-600 rounded-xl flex items-center justify-center shadow-lg shadow-brand-600/30">
+                <i data-lucide="layers" class="text-white w-6 h-6"></i>
+            </div>
+            <span class="font-black text-xl tracking-tighter dark:text-white">VoteSphere</span>
+        </div>
+        
+        <div class="flex items-center gap-3">
+            <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-500 dark:text-slate-400 hover:text-brand-600 transition-colors shadow-sm">
+                <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+                <i data-lucide="moon" class="w-5 h-5 block dark:hidden"></i>
+            </button>
+            <a href="{% url 'feeds' %}" class="px-4 py-2 text-xs font-bold text-slate-500 dark:text-slate-400 hover:text-brand-600 uppercase tracking-widest transition-colors">Cancel</a>
+        </div>
+    </nav>
+
+    <main class="w-full max-w-3xl px-6 py-10 relative">
+        <div class="glass-panel rounded-[3rem] p-8 md:p-14 shadow-2xl relative">
             
-            <header class="flex items-start justify-between mb-10">
-                <div class="flex items-center gap-5">
-                    <div class="w-14 h-14 bg-gradient-to-br from-brand-500 to-violet rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(99,102,241,0.5)] transform hover:rotate-6 transition-transform">
-                        <i data-lucide="plus-circle" class="w-7 h-7 text-white"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-3xl font-black tracking-tight text-white">Create New Poll</h1>
-                        <p class="text-[10px] text-brand-400 font-bold uppercase tracking-[0.2em]">Question Designer</p>
-                    </div>
+            <header class="mb-12 text-center">
+                <div class="inline-flex p-4 bg-brand-500/10 rounded-2xl mb-4 animate-float">
+                    <i data-lucide="plus-circle" class="w-8 h-8 text-brand-600"></i>
                 </div>
-                <a href="dashboard.html" class="text-xs font-bold text-slate-500 hover:text-brand-400 transition-colors uppercase tracking-widest">Cancel</a>
+                <h1 class="text-4xl font-black tracking-tight text-slate-900 dark:text-white mb-2">Create New Poll</h1>
+                <p class="text-sm text-slate-500 dark:text-slate-400 max-w-md mx-auto">Design your question, set your rules, and deploy your poll to the VoteSphere community.</p>
             </header>
 
-            <form class="space-y-8" id="form" method="POST">
+            <form class="space-y-10" id="form" method="POST">
                 {% csrf_token %} 
-                <div class="space-y-6">
-                    <div class="group">
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">01. The Question</label>
-                        <input type="text" placeholder="What is your favorite VoteSphere feature?" 
-                           name="ques" class="w-full bg-slate-950/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all font-medium">
+                
+                <!-- Step 1: Core Details -->
+                <section class="space-y-6">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="w-6 h-6 rounded-full bg-brand-600 text-white text-[10px] font-bold flex items-center justify-center">1</span>
+                        <h2 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Core Configuration</h2>
                     </div>
 
-                    <div class="group">
-                        <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">02. Context / Description</label>
-                        <textarea rows="2" placeholder="Provide more context for your voters..." 
-                           name="q_desc" class="w-full bg-slate-950/50 border border-slate-800 rounded-2xl px-5 py-4 text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-sm"></textarea>
-                    </div>
+                    <div class="space-y-6">
+                        <div class="group">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Your Question</label>
+                            <input type="text" placeholder="e.g., Which framework is better for 2024?" 
+                                name="ques" class="w-full bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 dark:text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all font-semibold shadow-sm">
+                        </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">03. Expiry Date</label>
-                            <div class="relative">
-                                <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400"></i>
-                                <input type="date" name="ex_date" class="w-full pl-12 pr-5 py-3.5 bg-slate-950/50 border border-slate-800 rounded-2xl text-sm text-white outline-none focus:border-brand-500 transition-all">
+                        <div class="group">
+                            <label class="block text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Detailed Context</label>
+                            <textarea rows="3" placeholder="Provide more information for your voters..." 
+                                name="q_desc" class="w-full bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl px-6 py-4 dark:text-white focus:border-brand-500 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all text-sm shadow-sm"></textarea>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Expiry Date</label>
+                                <div class="relative">
+                                    <i data-lucide="calendar" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-500"></i>
+                                    <input type="date" name="ex_date" class="w-full pl-12 pr-5 py-4 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm dark:text-white outline-none focus:border-brand-500 transition-all shadow-sm">
+                                </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">Topic Category</label>
+                                <div class="relative">
+                                    <i data-lucide="tag" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-500"></i>
+                                    <select name="cat" class="w-full pl-12 pr-10 py-4 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm dark:text-white outline-none focus:border-brand-500 appearance-none cursor-pointer shadow-sm">
+                                        <option value="general">General</option>
+                                        <option value="tech">Technology</option>
+                                        <option value="community">Community</option>
+                                        <option value="gov">Governance</option>
+                                    </select>
+                                    <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none"></i>
+                                </div>
                             </div>
                         </div>
-                        <div class="space-y-2">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-slate-400 px-1">04. Category</label>
-                            <div class="relative">
-                                <i data-lucide="tag" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-400"></i>
-                                <select name="cat" class="w-full pl-12 pr-10 py-3.5 bg-slate-950/50 border border-slate-800 rounded-2xl text-sm text-white outline-none focus:border-brand-500 appearance-none cursor-pointer">
-                                    <option value="general">General</option>
-                                    <option value="tech">Technology</option>
-                                    <option value="community">Community</option>
-                                    <option value="gov">Governance</option>
-                                </select>
-                                <i data-lucide="chevron-down" class="absolute right-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none"></i>
-                            </div>
-                        </div>
                     </div>
-                </div>
+                </section>
 
-                <hr class="border-slate-800 opacity-50">
-
-                <div class="space-y-5">
-                    <div class="flex items-center justify-between">
-                        <h3 class="text-sm font-black uppercase tracking-widest text-white">Poll Options</h3>
-                        <button type="button" onclick="addOption()" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-tighter flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-brand-500/20">
-                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Item
+                <!-- Step 2: Options Designer -->
+                <section class="space-y-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex items-center gap-3">
+                            <span class="w-6 h-6 rounded-full bg-brand-600 text-white text-[10px] font-bold flex items-center justify-center">2</span>
+                            <h2 class="text-xs font-black uppercase tracking-[0.2em] text-slate-400">Options Designer</h2>
+                        </div>
+                        <button type="button" onclick="addOption()" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-4 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:scale-105 transition-all shadow-md active:scale-95">
+                            <i data-lucide="plus" class="w-3 h-3"></i> Add Option
                         </button>
                     </div>
 
-                    <div id="options-container" class="space-y-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-                        <div class="option-card relative p-5 bg-white/5 border border-dashed border-brand-500/30 rounded-[1.5rem] group transition-all hover:bg-white/10 hover:border-brand-500/60">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-[9px] font-black text-brand-400 uppercase tracking-[0.2em]">Option Config</span>
-                                <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-600 cursor-move"></i>
+                    <div id="options-container" class="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                        <!-- Initial Option Card -->
+                        <div class="option-card relative p-6 bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-slate-800 rounded-3xl group transition-all hover:border-brand-500/50 shadow-sm">
+                            <div class="flex justify-between items-center mb-4">
+                                <div class="flex items-center gap-2">
+                                    <div class="w-1.5 h-6 bg-brand-500 rounded-full"></div>
+                                    <span class="text-[10px] font-black text-brand-600 uppercase tracking-widest">Option Alpha</span>
+                                </div>
+                                <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-300 dark:text-slate-700"></i>
                             </div>
-                            <input type="text" placeholder="Title of the option" class="opt w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
-                            <input type="text" placeholder="Explain this choice to voters..." class="opt_dsc w-full bg-transparent text-xs text-slate-400 outline-none">
+                            <div class="space-y-3">
+                                <input type="text" placeholder="Title of the option" class="opt w-full bg-transparent dark:text-white font-black text-lg outline-none border-b border-slate-100 dark:border-slate-800 focus:border-brand-500 transition-colors placeholder:text-slate-300 dark:placeholder:text-slate-700">
+                                <input type="text" placeholder="Explain this choice to voters..." class="opt_dsc w-full bg-transparent text-xs text-slate-500 dark:text-slate-400 outline-none">
+                            </div>
                         </div>
                     </div>
-                </div>
+                </section>
 
                 <input name="opt_hidden" id="opt_hidden" type="hidden">
                 <input name="opt_dsc_hidden" id="opt_dsc_hidden" type="hidden">
 
-                <button type="submit" class="w-full group relative flex items-center justify-center gap-3 bg-gradient-to-r from-brand-600 to-violet hover:from-brand-500 hover:to-brand-400 text-white py-5 rounded-2xl font-black text-sm uppercase tracking-[0.2em] transition-all shadow-[0_10px_30px_rgba(99,102,241,0.3)] active:scale-[0.98]">
-                    <i data-lucide="zap" class="w-5 h-5 fill-white"></i>
-                    Deploy Poll to Sphere
+                <button type="submit" class="w-full relative overflow-hidden group flex items-center justify-center gap-4 bg-brand-600 text-white py-6 rounded-[2rem] font-black text-sm uppercase tracking-[0.3em] transition-all shadow-[0_20px_40px_rgba(79,70,229,0.3)] hover:shadow-[0_25px_50px_rgba(79,70,229,0.4)] hover:-translate-y-1 active:translate-y-0 active:scale-[0.98]">
+                    <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                    Launch Poll
                 </button>
             </form>
         </div>
-    </div>
+        
+        <footer class="mt-8 text-center text-slate-400 dark:text-slate-600 text-[10px] font-bold uppercase tracking-widest">
+            &copy; 2024 VoteSphere • Built for the community
+        </footer>
+    </main>
 
-    <script>
+
+
+<script>
+
+    lucide.createIcons();
+
+
+
+    function addOption() {
+
+        const container = document.getElementById('options-container');
+
+        const div = document.createElement('div');
+
+        div.className = "option-card relative p-5 bg-white/5 border border-dashed border-brand-500/30 rounded-[1.5rem] animate-in slide-in-from-bottom-2 duration-300 group transition-all hover:bg-white/10 hover:border-brand-500/60";
+
+        div.innerHTML = `
+
+            <div class="flex justify-between items-center mb-3">
+
+                <span class="text-[9px] font-black text-brand-400 uppercase tracking-[0.2em]">New Option</span>
+
+                <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-slate-500 hover:text-red-400 transition-colors">
+
+                    <i data-lucide="trash-2" class="w-4 h-4"></i>
+
+                </button>
+
+            </div>
+
+            <input type="text" placeholder="Title of the option" class="opt w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
+
+            <input type="text" placeholder="Explain this choice..." class="opt_dsc w-full bg-transparent text-xs text-slate-400 outline-none">
+
+        `;
+
+       
+
+        container.appendChild(div);
+
         lucide.createIcons();
 
-        function addOption() {
-            const container = document.getElementById('options-container');
-            const div = document.createElement('div');
-            div.className = "option-card relative p-5 bg-white/5 border border-dashed border-brand-500/30 rounded-[1.5rem] animate-in slide-in-from-bottom-2 duration-300 group transition-all hover:bg-white/10 hover:border-brand-500/60";
-            
-            div.innerHTML = `
-                <div class="flex justify-between items-center mb-3">
-                    <span class="text-[9px] font-black text-brand-400 uppercase tracking-[0.2em]">New Option</span>
-                    <button type="button" onclick="this.parentElement.parentElement.remove()" class="text-slate-500 hover:text-red-400 transition-colors">
-                        <i data-lucide="trash-2" class="w-4 h-4"></i>
-                    </button>
-                </div>
-                <input type="text" placeholder="Title of the option" class="opt w-full bg-transparent text-white font-bold outline-none mb-2 border-b border-white/10 focus:border-brand-500 transition-colors">
-                <input type="text" placeholder="Explain this choice..." class="opt_dsc w-full bg-transparent text-xs text-slate-400 outline-none">
-            `;
-            
-            container.appendChild(div);
-            lucide.createIcons();
-            container.scrollTop = container.scrollHeight;
-        }
+        container.scrollTop = container.scrollHeight;
 
-        
-        document.getElementById('form').addEventListener('submit',function(e){
-            document.querySelectorAll('.opt').forEach(input => {
-                document.getElementById('opt_hidden').value += input.value + ",";
-            })
-            console.log(document.getElementById('opt_hidden').value)
+    }
 
-            document.querySelectorAll('.opt_dsc').forEach(input => {
-                document.getElementById("opt_dsc_hidden").value += input.value + ",";
-            })
+
+
+   
+
+    document.getElementById('form').addEventListener('submit',function(e){
+
+        document.querySelectorAll('.opt').forEach(input => {
+
+            document.getElementById('opt_hidden').value += input.value + ",";
+
         })
-    </script>
+
+        console.log(document.getElementById('opt_hidden').value)
+
+
+
+        document.querySelectorAll('.opt_dsc').forEach(input => {
+
+            document.getElementById("opt_dsc_hidden").value += input.value + ",";
+
+        })
+
+    })
+
+</script>
 </body>
 </html>

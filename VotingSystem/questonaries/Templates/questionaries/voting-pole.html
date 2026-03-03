@@ -1,50 +1,10 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VoteSphere | Cast Your Vote</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        brand: { 600: '#4f46e5', 700: '#4338ca' }
-                    }
-                }
-            }
-        }
+{% extends 'home/layout.html' %}
 
-        function updateTheme() {
-            if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-            } else {
-                document.documentElement.classList.remove('dark');
-            }
-        }
-
-        function toggleTheme() {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.setItem('theme', 'light');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.setItem('theme', 'dark');
-            }
-        }
-        
-        updateTheme();
-    </script>
-</head>
-<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-500 min-h-screen font-sans">
-
+{% block content %}
     <!-- Header -->
     <header class="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
         <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-            <a href="feeds.html" class="flex items-center gap-2 group text-slate-500 hover:text-brand-600 transition-colors">
+            <a href="{% url 'feeds' %}" class="flex items-center gap-2 group text-slate-500 hover:text-brand-600 transition-colors">
                 <i data-lucide="arrow-left" class="w-4 h-4"></i>
                 <span class="text-xs font-bold">Back to Feed</span>
             </a>
@@ -57,7 +17,7 @@
                 </button>
 
                 <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-purple-500 p-0.5">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-full h-full rounded-full bg-white dark:bg-slate-900" alt="Avatar">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ request.user.username }}" class="w-full h-full rounded-full bg-white dark:bg-slate-900" alt="Avatar">
                 </div>
             </div>
         </div>
@@ -71,12 +31,12 @@
             <!-- Question Header -->
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
-                    <span class="bg-brand-600/10 text-brand-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">Technology</span>
-                    <span class="text-[10px] text-slate-400 font-bold uppercase">ID: #Q-8821</span>
+                    <span class="bg-brand-600/10 text-brand-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">{{ ques.category|default:"General" }}</span>
+                    <span class="text-[10px] text-slate-400 font-bold uppercase">ID: Q#{{ques.id}}</span>
                 </div>
-                <h1 class="text-3xl font-black tracking-tight leading-tight">Which programming language is best for Artificial Intelligence in 2024?</h1>
+                <h1 class="text-3xl font-black tracking-tight leading-tight">{{ ques.ques }}</h1>
                 <p class="text-slate-500 dark:text-slate-400 leading-relaxed">
-                    As AI continues to evolve rapidly with LLMs and Generative AI, the choice of stack is critical. We are evaluating Python's ecosystem against the performance of Mojo and the safety of Rust. What is your go-to for production environment deployments in the current landscape?
+                   {{ ques.q_desc }}
                 </p>
             </div>
 
@@ -84,48 +44,34 @@
             <div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xl">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6">Select an Option</h3>
                 
-                <form id="voteForm" class="space-y-4">
-                    <!-- Option 1 -->
+                <form id="voteForm" method="POST" class="space-y-4">
+                    {% csrf_token %}
+                    <!-- Options Loop -->
+                    {% for o in opt %}
                     <label class="block relative group cursor-pointer">
-                        <input type="radio" name="poll" class="peer sr-only">
-                        <div class="p-5 rounded-2xl border-2 border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 peer-checked:border-brand-600 peer-checked:bg-brand-600/5 transition-all flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 flex items-center justify-center">
-                                    <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
+                        <input type="radio" name="opt_id" value="{{ o.id }}" class="peer sr-only">
+                        <div class="p-5 rounded-2xl border-2 border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 peer-checked:border-brand-600 peer-checked:bg-brand-600/5 transition-all flex items-start justify-between">
+                            <div class="flex items-start gap-4">
+                                <!-- Custom Radio Circle -->
+                                <div class="mt-1 w-6 h-6 shrink-0 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 flex items-center justify-center">
+                                    <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100 transition-opacity"></div>
                                 </div>
-                                <span class="text-sm font-bold">Python (Standard)</span>
+                                <!-- Option Text Content -->
+                                <div class="flex flex-col">
+                                    <span class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ o.option }}</span>
+                                    <!-- Option Description Added Here -->
+                                    {%if o.o_desc%}                                        <span class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
+                                            {{ o.o_desc|default:"No additional details provided for this choice." }}
+                                        </span>
+                                    {% endif %}
+                                </div>
                             </div>
-                            <i data-lucide="info" class="w-4 h-4 text-slate-300"></i>
+                            <i data-lucide="info" class="w-4 h-4 text-slate-300 mt-1 shrink-0"></i>
                         </div>
                     </label>
+                    {% endfor %}
 
-                    <!-- Option 2 -->
-                    <label class="block relative group cursor-pointer">
-                        <input type="radio" name="poll" class="peer sr-only">
-                        <div class="p-5 rounded-2xl border-2 border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 peer-checked:border-brand-600 peer-checked:bg-brand-600/5 transition-all flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 flex items-center justify-center">
-                                    <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
-                                </div>
-                                <span class="text-sm font-bold">Rust (Performance/Safety)</span>
-                            </div>
-                        </div>
-                    </label>
-
-                    <!-- Option 3 -->
-                    <label class="block relative group cursor-pointer">
-                        <input type="radio" name="poll" class="peer sr-only">
-                        <div class="p-5 rounded-2xl border-2 border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 peer-checked:border-brand-600 peer-checked:bg-brand-600/5 transition-all flex items-center justify-between">
-                            <div class="flex items-center gap-4">
-                                <div class="w-6 h-6 rounded-full border-2 border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 flex items-center justify-center">
-                                    <div class="w-2 h-2 rounded-full bg-white opacity-0 peer-checked:opacity-100"></div>
-                                </div>
-                                <span class="text-sm font-bold">Mojo (New Gen)</span>
-                            </div>
-                        </div>
-                    </label>
-
-                    <button type="button" onclick="this.innerHTML='Vote Cast! ✓'; this.classList.add('bg-emerald-600')" class="w-full mt-6 bg-brand-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-600/20 hover:scale-[1.01] transition-all">
+                    <button type="submit" class="w-full mt-6 bg-brand-600 text-white py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] shadow-lg shadow-brand-600/20 hover:scale-[1.01] active:scale-95 transition-all">
                         Cast Your Vote
                     </button>
                 </form>
@@ -142,7 +88,7 @@
                 </div>
 
                 <div class="flex gap-4">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-10 h-10 rounded-xl bg-brand-100" alt="Me">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ request.user.username }}" class="w-10 h-10 rounded-xl bg-brand-100" alt="Me">
                     <div class="flex-grow">
                         <textarea placeholder="Share your thoughts on this poll..." class="w-full bg-white/50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-sm focus:ring-2 focus:ring-brand-600/20 transition-all outline-none min-h-[100px]"></textarea>
                         <div class="flex justify-end mt-2">
@@ -215,10 +161,10 @@
                 <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
                     <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-4">Posted By</p>
                     <div class="flex items-center gap-3">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus" class="w-12 h-12 rounded-2xl bg-indigo-100" alt="Marcus">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ques.u_id.username}}" class="w-12 h-12 rounded-2xl bg-indigo-100" alt="Marcus">
                         <div>
-                            <p class="text-sm font-black">Marcus Chen</p>
-                            <p class="text-[10px] text-slate-500 font-bold">@mchen_dev</p>
+                            <p class="text-sm font-black">{{ques.u_id.first_name}} {{ques.u_id.last_name}}</p>
+                            <p class="text-[10px] text-slate-500 font-bold">@{{ques.u_id.username}}</p>
                         </div>
                     </div>
                     <button class="w-full mt-4 py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">Follow Author</button>
@@ -245,7 +191,11 @@
     </main>
 
     <script>
-        lucide.createIcons();
+        // Ensure Lucide icons render after template loads
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof lucide !== 'undefined') {
+                lucide.createIcons();
+            }
+        });
     </script>
-</body>
-</html>
+{% endblock %}

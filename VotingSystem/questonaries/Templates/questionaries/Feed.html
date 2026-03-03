@@ -1,190 +1,254 @@
 {% extends 'home/layout.html' %}
 {% block title %} VoteSphere | Feed {% endblock %}
 
-
 {% block content %}
 <style>
     .custom-scrollbar::-webkit-scrollbar { width: 4px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #334155; }
+    
+    .glass-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.4);
+    }
+    .dark .glass-card {
+        background: rgba(15, 23, 42, 0.7);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Animated background blob */
+    .blob {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        background: linear-gradient(180deg, rgba(99, 102, 241, 0.15) 0%, rgba(139, 92, 246, 0.15) 100%);
+        filter: blur(80px);
+        border-radius: 50%;
+        z-index: -1;
+        animation: move 25s infinite alternate;
+    }
+
+    @keyframes move {
+        from { transform: translate(-10%, -10%) rotate(0deg); }
+        to { transform: translate(20%, 20%) rotate(360deg); }
+    }
 </style>
+
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-500 min-h-screen font-sans flex flex-col">
 
     <!-- Background Decoration -->
-    <div class="fixed inset-0 -z-10">
-        <div class="absolute top-0 right-0 w-1/2 h-1/2 bg-brand-600/5 rounded-full blur-[120px]"></div>
-        <div class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-purple-600/5 rounded-full blur-[120px]"></div>
+    <div class="fixed inset-0 -z-10 overflow-hidden">
+        <div class="blob" style="top: -10%; right: -10%;"></div>
+        <div class="blob" style="bottom: -10%; left: -10%; animation-delay: -5s;"></div>
     </div>
 
-    <!-- Header -->
-    <header class="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
-        <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
-            <div class="flex items-center gap-8">
-                <a href="index.html" class="flex items-center gap-2 group">
-                    <div class="bg-brand-600 p-1.5 rounded-lg text-white">
-                        <i data-lucide="vote" class="w-4 h-4"></i>
+    <!-- Header (Fixed the visibility class) -->
+    <header class="sticky top-0 z-40 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-4 sm:gap-8">
+                <a href="{% url 'home' %}" class="flex items-center gap-2 group">
+                    <div class="bg-brand-600 p-2 rounded-xl text-white shadow-lg shadow-brand-600/30 transform group-hover:rotate-12 transition-transform">
+                        <i data-lucide="vote" class="w-5 h-5"></i>
                     </div>
-                    <span class="text-lg font-black tracking-tight bg-gradient-to-r from-brand-600 to-violet-500 bg-clip-text text-transparent">
+                    <span class="text-xl font-black tracking-tighter bg-gradient-to-r from-brand-600 to-violet-500 bg-clip-text text-transparent">
                         VoteSphere
                     </span>
                 </a>
                 
                 <div class="hidden md:flex relative group">
                     <i data-lucide="search" class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
-                    <input type="text" placeholder="Search polls..." class="bg-slate-100 dark:bg-slate-800/50 border-none rounded-xl py-2 pl-10 pr-4 text-xs w-64 focus:ring-2 focus:ring-brand-600/20 transition-all">
+                    <input type="text" placeholder="Search the sphere..." class="bg-slate-100 dark:bg-slate-900 border-none rounded-2xl py-2 pl-10 pr-4 text-xs w-64 focus:ring-2 focus:ring-brand-600/20 transition-all outline-none">
                 </div>
             </div>
 
-            <div class="flex items-center gap-4">
-                <!-- Theme Changer -->
-                <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-brand-600 transition-colors">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-900 text-slate-500 dark:text-slate-400 hover:text-brand-600 transition-all active:scale-90">
                     <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
                     <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
                 </button>
 
-                <a href="signin.html" class="text-xs font-bold text-slate-500 hover:text-brand-600 transition-colors">Sign In</a>
-                <button class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-all">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                    <span>Create Poll</span>
-                </button>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'create-ques' %}" class="bg-brand-600 hover:bg-brand-700 text-white px-4 py-2.5 rounded-xl text-xs font-black flex items-center gap-2 transition-all shadow-lg shadow-brand-600/20 active:scale-95">
+                        <i data-lucide="plus" class="w-4 h-4"></i>
+                        <span class="hidden sm:inline">Create Poll</span>
+                    </a>
+                    <a href="{% url 'Logout' %}" class="bg-brand-600 text-white px-4 py-2 rounded-lg text-xs font-bold hover:bg-brand-700 shadow-md shadow-brand-600/30 transition active:scale-95">Logout</a>
+
+                {% else %}
+                    <a href="{% url 'login' %}" class="hidden sm:block text-xs font-bold px-4 py-2 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors">Login</a>
+                    <a href="{% url 'regis' %}" class="bg-brand-600 text-white px-5 py-2.5 rounded-xl text-xs font-black hover:bg-brand-700 shadow-lg shadow-brand-600/20 transition active:scale-95">Join</a>
+                {% endif %}
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto w-full px-4 py-8 flex gap-8 flex-grow">
+    <div class="max-w-7xl mx-auto w-full px-4 sm:px-6 py-6 lg:py-10 flex gap-8 flex-grow">
         
-        <!-- Sidebar Navigation -->
-        <aside class="hidden lg:flex flex-col gap-6 w-64 sticky top-24 h-fit">
-            <div class="space-y-1">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 bg-brand-600/10 text-brand-600 rounded-2xl text-xs font-bold">
+        <!-- Left Sidebar Navigation -->
+        <aside class="hidden lg:flex flex-col gap-6 w-64 sticky top-28 h-fit">
+            <div class="space-y-2">
+                <a href="#" class="flex items-center gap-3 px-5 py-4 bg-brand-600 text-white rounded-2xl text-xs font-black shadow-lg shadow-brand-600/20">
                     <i data-lucide="layout-grid" class="w-4 h-4"></i> Explore Feed
                 </a>
-                <a href="#" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-2xl text-xs font-bold transition-colors">
-                    <i data-lucide="trending-up" class="w-4 h-4"></i> Trending
+                <a href="#" class="flex items-center gap-3 px-5 py-4 text-slate-500 hover:bg-white dark:hover:bg-slate-900 rounded-2xl text-xs font-bold transition-all hover:translate-x-1">
+                    <i data-lucide="trending-up" class="w-4 h-4"></i> Trending Now
+                </a>
+                <a href="#" class="flex items-center gap-3 px-5 py-4 text-slate-500 hover:bg-white dark:hover:bg-slate-900 rounded-2xl text-xs font-bold transition-all hover:translate-x-1">
+                    <i data-lucide="bookmark" class="w-4 h-4"></i> Bookmarked
                 </a>
             </div>
 
-            <div class="p-5 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md rounded-3xl border border-slate-200 dark:border-slate-800">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-4">Categories</h3>
+            <div class="p-6 glass-card rounded-[2rem]">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-4 px-1">Discover</h3>
                 <div class="flex flex-wrap gap-2">
-                    <span class="px-3 py-1.5 bg-white dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-brand-600">Technology</span>
-                    <span class="px-3 py-1.5 bg-white dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-brand-600">Politics</span>
-                    <span class="px-3 py-1.5 bg-white dark:bg-slate-800 rounded-lg text-[10px] font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 cursor-pointer hover:border-brand-600">Social</span>
+                    <span class="px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-bold text-slate-600 dark:text-slate-300 border border-transparent hover:border-brand-600 cursor-pointer transition-all">#Tech</span>
+                    <span class="px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-bold text-slate-600 dark:text-slate-300 border border-transparent hover:border-brand-600 cursor-pointer transition-all">#Future</span>
+                    <span class="px-3 py-2 bg-slate-100 dark:bg-slate-800 rounded-xl text-[10px] font-bold text-slate-600 dark:text-slate-300 border border-transparent hover:border-brand-600 cursor-pointer transition-all">#Society</span>
                 </div>
             </div>
         </aside>
 
         <!-- Main Feed -->
-        <main class="flex-grow max-w-2xl space-y-6 custom-scrollbar">
+        <main class="flex-grow max-w-2xl space-y-6">
             
-            <div class="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-4">
-                <h1 class="text-xl font-black tracking-tight">Public Feed</h1>
-                <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-bold text-slate-400 uppercase">Sort by:</span>
-                    <select class="bg-transparent text-[10px] font-bold text-brand-600 outline-none cursor-pointer">
-                        <option>Newest First</option>
-                        <option>Trending</option>
+            <div class="flex items-center justify-between pb-2">
+                <div>
+                    <h1 class="text-2xl font-black tracking-tight text-slate-900 dark:text-white">Public Sphere</h1>
+                    <p class="text-xs text-slate-500 font-medium">Real-time pulses from around the globe</p>
+                </div>
+                <div class="flex items-center gap-2 bg-white dark:bg-slate-900 px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <span class="text-[10px] font-black text-slate-400 uppercase">Sort</span>
+                    <select class="bg-transparent text-[10px] font-black text-brand-600 outline-none cursor-pointer">
+                        <option>Recent</option>
+                        <option>Popular</option>
                     </select>
                 </div>
             </div>
 
             {% for f in feeds %}
+            <!-- Enhanced Poll Card -->
+            <div class="glass-card rounded-[2.5rem] p-6 lg:p-8 shadow-sm transition-all hover:shadow-xl hover:shadow-brand-600/5 group relative overflow-hidden">
+                <!-- Highlight bar on hover -->
+                <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
 
-            <!-- Poll Card  -->
-            <div class="bg-white/60 dark:bg-slate-900/60 backdrop-blur-md rounded-[2.5rem] p-6 lg:p-8 border border-slate-200/50 dark:border-slate-800/50 shadow-sm transition-all group">
-                <!-- User Info -->
                 <div class="flex items-center justify-between mb-6">
                     <div class="flex items-center gap-3">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Marcus" class="w-10 h-10 rounded-2xl bg-indigo-100 border-2 border-white dark:border-slate-800 shadow-sm" alt="Author">
+                        <div class="relative">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{f.u_id.username}}" class="w-12 h-12 rounded-2xl bg-brand-100 dark:bg-brand-900/30 border-2 border-white dark:border-slate-800 shadow-sm" alt="User">
+                            <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-slate-900 rounded-full"></div>
+                        </div>
                         <div>
-                            <p class="text-sm font-bold">{{f.u_id.username|upper}}</p>
-                            <p class="text-[10px] text-slate-500 font-medium italic">Verified Contributor • {{f.u_id.email}}</p>
+                            <p class="text-sm font-black text-slate-900 dark:text-white">{{f.u_id.username|upper}}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Verified Thinker • {{f.u_id.email|truncatechars:20}}</p>
                         </div>
                     </div>
-                    <div class="bg-brand-600/10 text-brand-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">
-                        Technology
+                    <div class="bg-slate-100 dark:bg-slate-800 text-slate-500 px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700">
+                        {{f.category|default:"General"}}
                     </div>
                 </div>
 
-                <!-- Question -->
-                <h2 class="text-xl font-black tracking-tight mb-3 leading-snug group-hover:text-brand-600 transition-colors">{{f.ques}}</h2>
+                <h2 class="text-xl font-black tracking-tight mb-3 leading-tight text-slate-900 dark:text-white group-hover:text-brand-600 transition-colors">
+                    {{f.ques}}
+                </h2>
                 
-                <!-- Description -->
-                <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 line-clamp-3">
+                <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 line-clamp-2">
                    {{f.q_desc}} 
                 </p>
 
-                <!-- Metadata (Expiry) -->
-                <div class="flex items-center gap-4 mb-8">
-                    <div class="flex items-center gap-1.5 text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg">
-                        <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
-                        <span class="text-[11px] font-bold">Expires: {{f.expiry}}</span>
+                <div class="flex flex-wrap items-center gap-4 mb-8">
+                    <div class="flex items-center gap-2 text-slate-500 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 rounded-xl border border-slate-100 dark:border-slate-800">
+                        <i data-lucide="clock" class="w-3.5 h-3.5 text-brand-500"></i>
+                        <span class="text-[11px] font-black">Ends: {{f.expiry}}</span>
                     </div>
-                    <div class="flex items-center gap-1.5 text-slate-400 dark:text-slate-500">
-                        <i data-lucide="users" class="w-3.5 h-3.5"></i>
-                        <span class="text-[11px] font-bold">1,240 Participants</span>
+                    <div class="flex items-center gap-2 text-slate-500">
+                        <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
+                        <span class="text-[11px] font-black">2.4k Votes</span>
                     </div>
                 </div>
 
-                <!-- CTA Button -->
                 <div class="flex items-center justify-between pt-6 border-t border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center gap-4">
-                        <div class="flex items-center gap-1.5 text-slate-400">
+                    <div class="flex items-center gap-5">
+                        <button class="flex items-center gap-1.5 text-slate-400 hover:text-red-500 transition-colors">
                             <i data-lucide="heart" class="w-4 h-4"></i>
-                            <span class="text-[11px] font-bold">452</span>
-                        </div>
-                        <div class="flex items-center gap-1.5 text-slate-400">
-                            <i data-lucide="message-circle" class="w-4 h-4"></i>
-                            <span class="text-[11px] font-bold">28</span>
-                        </div>
+                            <span class="text-[11px] font-black">452</span>
+                        </button>
+                        <button class="flex items-center gap-1.5 text-slate-400 hover:text-brand-600 transition-colors">
+                            <i data-lucide="share-2" class="w-4 h-4"></i>
+                            <span class="text-[11px] font-black">Share</span>
+                        </button>
                     </div>
                     
-                    <!-- View/Vote Button: Redirects to login or vote pg -->
-                    <a href="signin.html" class="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-2xl text-xs font-black uppercase tracking-widest hover:scale-[1.03] active:scale-95 transition-all shadow-lg shadow-brand-600/10">
-                        View & Vote <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                    <a href="{% url 'voting_pole' f.id %}" class="group/btn flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-600 dark:hover:bg-brand-600 hover:text-white transition-all shadow-xl shadow-black/5 active:scale-95">
+                        Enter Poll 
+                        <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
             </div>
-
+            {% empty %}
+            <div class="text-center py-20 glass-card rounded-[3rem] border-dashed border-2 border-slate-300 dark:border-slate-800">
+                <div class="bg-slate-100 dark:bg-slate-900 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="inbox" class="w-8 h-8 text-slate-400"></i>
+                </div>
+                <h3 class="font-black text-slate-900 dark:text-white">The Sphere is Empty</h3>
+                <p class="text-xs text-slate-500">Be the first to spark a conversation!</p>
+            </div>
             {% endfor %}
 
         </main>
 
         <!-- Right Sidebar -->
-        <aside class="hidden xl:flex flex-col gap-6 w-80 sticky top-24 h-fit">
-            <div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] p-6 border border-slate-200 dark:border-slate-800">
-                <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-6">Trending Topics</h3>
-                <div class="space-y-4">
-                    <div class="group cursor-pointer">
-                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-brand-600 transition-colors">#GlobalWarming</p>
-                        <p class="text-[9px] text-slate-500 font-medium">1.2k polls today</p>
+        <aside class="hidden xl:flex flex-col gap-6 w-80 sticky top-28 h-fit">
+            <div class="glass-card rounded-[2.5rem] p-8">
+                <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Trending Pulse</h3>
+                <div class="space-y-5">
+                    <div class="group cursor-pointer flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-black text-slate-900 dark:text-white group-hover:text-brand-600 transition-colors">#AIRevolution</p>
+                            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">1,240 active polls</p>
+                        </div>
+                        <i data-lucide="trending-up" class="w-4 h-4 text-green-500"></i>
                     </div>
-                    <div class="group cursor-pointer">
-                        <p class="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-brand-600 transition-colors">#RemoteWork</p>
-                        <p class="text-[9px] text-slate-500 font-medium">850 polls today</p>
+                    <div class="group cursor-pointer flex justify-between items-center">
+                        <div>
+                            <p class="text-xs font-black text-slate-900 dark:text-white group-hover:text-brand-600 transition-colors">#SpaceX</p>
+                            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">850 active polls</p>
+                        </div>
+                        <i data-lucide="trending-up" class="w-4 h-4 text-green-500"></i>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-gradient-to-br from-brand-600 to-violet-700 rounded-[2.5rem] p-6 text-white shadow-xl shadow-brand-600/20">
-                <h3 class="text-sm font-black mb-2">Join the Discussion</h3>
-                <p class="text-[11px] text-white/80 leading-relaxed mb-4">Create your own polls and invite friends to see what the world thinks about your ideas.</p>
-                <a href="register.html" class="block text-center w-full bg-white text-brand-600 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-transform">Get Started</a>
+            <div class="bg-gradient-to-br from-brand-600 to-violet-700 rounded-[2.5rem] p-8 text-white shadow-2xl shadow-brand-600/30 relative overflow-hidden group">
+                <div class="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full blur-2xl group-hover:scale-150 transition-transform duration-700"></div>
+                <h3 class="text-lg font-black mb-2 relative z-10">Ignite the Sphere</h3>
+                <p class="text-xs text-white/80 leading-relaxed mb-6 relative z-10">Have a burning question? Put it to the test and see where the world stands.</p>
+                <a href="{% url 'regis' %}" class="block text-center w-full bg-white text-brand-600 py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:shadow-xl transition-all relative z-10">Get Started Free</a>
             </div>
         </aside>
 
     </div>
 
-    <!-- Mobile Nav -->
-    <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-200 dark:border-slate-800 px-6 py-3 flex justify-between items-center z-50">
-        <button class="text-brand-600 flex flex-col items-center gap-1">
-            <i data-lucide="home" class="w-5 h-5"></i>
-            <span class="text-[8px] font-bold uppercase">Feed</span>
+    <!-- Mobile Nav Bar (Improved) -->
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 bg-white/90 dark:bg-slate-950/90 backdrop-blur-2xl border-t border-slate-200 dark:border-slate-800 px-8 py-4 flex justify-between items-center z-50 rounded-t-[2rem] shadow-2xl">
+        <button class="text-brand-600 flex flex-col items-center gap-1.5 transform active:scale-75 transition-transform">
+            <i data-lucide="home" class="w-6 h-6"></i>
+            <span class="text-[8px] font-black uppercase tracking-widest">Sphere</span>
         </button>
-        <a href="signin.html" class="text-slate-400 flex flex-col items-center gap-1">
-            <i data-lucide="user" class="w-5 h-5"></i>
-            <span class="text-[8px] font-bold uppercase">Account</span>
+        <button class="text-slate-400 hover:text-brand-600 flex flex-col items-center gap-1.5 transition-colors">
+            <i data-lucide="trending-up" class="w-6 h-6"></i>
+            <span class="text-[8px] font-black uppercase tracking-widest">Trends</span>
+        </button>
+        <a href="{% url 'login' %}" class="text-slate-400 hover:text-brand-600 flex flex-col items-center gap-1.5 transition-colors">
+            <i data-lucide="user" class="w-6 h-6"></i>
+            <span class="text-[8px] font-black uppercase tracking-widest">Profile</span>
         </a>
     </nav>
+    
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
 {% endblock %}

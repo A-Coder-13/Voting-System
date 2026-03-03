@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Category, Question, options
+from .models import Category, Question, options,Vote_Click
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 
@@ -36,7 +36,7 @@ def create_question(req):
             if opt != ",":
                 option += opt
             else:
-                desc_list.append(option)
+                option_list.append(option)
                 option=""
         print(option_list)
 
@@ -44,7 +44,7 @@ def create_question(req):
             if dsc != ",":
                 opt_dsc += dsc
             else:
-                option_list.append(opt_dsc)
+                desc_list.append(opt_dsc)
                 opt_dsc=""
         print(desc_list)
         
@@ -60,13 +60,19 @@ def create_question(req):
             )
 
         messages.success(req, "Poll deployed successfully!")
-        return redirect("feed")  
+        return redirect("feeds")  
 
     return render(req, "questionaries/ques_creation.html")
 
+
+
 def feed_view(req):
     # print(req.user)
-    feeds = Question.objects.exclude(u_id = req.user)
+    feeds = None
+    if req.user.is_authenticated:
+        feeds = Question.objects.exclude(u_id = req.user)
+    else:
+        feeds=Question.objects.all()
     context= {'feeds':feeds}
     return render(req,"questionaries/Feed.html", context)
 
@@ -75,6 +81,26 @@ def feed_view(req):
 
 
 
+@login_required  
+def voting_pole(req,id):
+    if req.method=='POST':
+        opt_id = req.POST.get("opt_id")
+        user = req.user
+
+        selected_opt = options.objects.get(id=opt_id)
+
+        v = Vote_Click.objects.create(
+            opt_id = selected_opt,
+            user_id = user
+        )
+
+
+    q_id = id
+    ques = Question.objects.get(id=q_id)
+    opt = options.objects.filter(q_id_id=q_id)
     
-def voting_pole(req):
-    return render(req,"questionaries/voting-pole.html")
+    context = {
+        'ques':ques,
+        'opt':opt
+    }
+    return render(req,"questionaries/voting-pole.html",context)

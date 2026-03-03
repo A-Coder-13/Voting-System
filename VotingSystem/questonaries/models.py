@@ -20,3 +20,9 @@ class options(models.Model):
     created_at= models.DateTimeField(auto_now_add=True)
 
 
+class Vote_Click(models.Model):
+    opt_id = models.ForeignKey(options,on_delete=models.CASCADE)
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    created_at= models.DateTimeField(auto_now_add=True)
+
+
