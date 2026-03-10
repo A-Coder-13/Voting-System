@@ -141,31 +141,31 @@
                             <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 border-2 border-white dark:border-slate-900 rounded-full"></div>
                         </div>
                         <div>
-                            <p class="text-sm font-black text-slate-900 dark:text-white">{{f.u_id.username|upper}}</p>
-                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Verified Thinker • {{f.u_id.email|truncatechars:20}}</p>
+                            <p class="text-sm font-black text-slate-900 dark:text-white">{{f.ques_data.u_id.username|upper}}</p>
+                            <p class="text-[10px] text-slate-400 font-bold uppercase tracking-tighter">Verified Thinker • {{f.ques_data.u_id.email|truncatechars:20}}</p>
                         </div>
                     </div>
                     <div class="bg-slate-100 dark:bg-slate-800 text-slate-500 px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-widest border border-slate-200 dark:border-slate-700">
-                        {{f.category|default:"General"}}
+                        {{f.ques_data.category|default:"General"}}
                     </div>
                 </div>
 
                 <h2 class="text-xl font-black tracking-tight mb-3 leading-tight text-slate-900 dark:text-white group-hover:text-brand-600 transition-colors">
-                    {{f.ques}}
+                    {{f.ques_data.ques}}
                 </h2>
                 
                 <p class="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6 line-clamp-2">
-                   {{f.q_desc}} 
+                   {{f.ques_data.q_desc}} 
                 </p>
 
                 <div class="flex flex-wrap items-center gap-4 mb-8">
                     <div class="flex items-center gap-2 text-slate-500 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 rounded-xl border border-slate-100 dark:border-slate-800">
                         <i data-lucide="clock" class="w-3.5 h-3.5 text-brand-500"></i>
-                        <span class="text-[11px] font-black">Ends: {{f.expiry}}</span>
+                        <span class="text-[11px] font-black">Ends: {{f.ques_data.expiry}}</span>
                     </div>
                     <div class="flex items-center gap-2 text-slate-500">
                         <i data-lucide="bar-chart-3" class="w-3.5 h-3.5"></i>
-                        <span class="text-[11px] font-black">2.4k Votes</span>
+                        <span class="text-[11px] font-black">{{f.ques_vote_count}} Votes</span>
                     </div>
                 </div>
 
@@ -181,7 +181,7 @@
                         </button>
                     </div>
                     
-                    <a href="{% url 'voting_pole' f.id %}" class="group/btn flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-600 dark:hover:bg-brand-600 hover:text-white transition-all shadow-xl shadow-black/5 active:scale-95">
+                    <a href="{% url 'voting_pole' f.ques_data.id %}" class="group/btn flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-brand-600 dark:hover:bg-brand-600 hover:text-white transition-all shadow-xl shadow-black/5 active:scale-95">
                         Enter Poll 
                         <i data-lucide="arrow-right" class="w-4 h-4 transform group-hover/btn:translate-x-1 transition-transform"></i>
                     </a>

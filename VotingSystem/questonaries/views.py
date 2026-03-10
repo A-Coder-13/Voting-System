@@ -73,7 +73,19 @@ def feed_view(req):
         feeds = Question.objects.exclude(u_id = req.user)
     else:
         feeds=Question.objects.all()
-    context= {'feeds':feeds}
+
+    feed_array=[]
+    for f in feeds: 
+        total = Vote_Click.objects.filter(opt_id__q_id=f).count()
+        feed_array.append({
+            'ques_vote_count':total,
+            'ques_data':f
+        })
+
+        print(feed_array)
+
+
+    context= {'feeds':feed_array}
     return render(req,"questionaries/Feed.html", context)
 
 
@@ -81,26 +93,57 @@ def feed_view(req):
 
 
 
-@login_required  
-def voting_pole(req,id):
-    if req.method=='POST':
-        opt_id = req.POST.get("opt_id")
-        user = req.user
+@login_required
+def voting_pole(req, id):
 
+    user = req.user
+    ques = Question.objects.get(id=id)
+    opt = options.objects.filter(q_id=ques)
+
+    # check user vote
+    user_vote = Vote_Click.objects.filter(
+        opt_id__q_id=ques,
+        user_id=user
+    ).first()
+
+    if req.method == 'POST':
+
+        opt_id = req.POST.get("opt_id")
         selected_opt = options.objects.get(id=opt_id)
 
-        v = Vote_Click.objects.create(
-            opt_id = selected_opt,
-            user_id = user
+        if user_vote:
+            messages.warning(req, 'You can vote only once.')
+            return redirect('voting_pole', id=id)
+
+        Vote_Click.objects.create(
+            opt_id=selected_opt,
+            user_id=user
         )
 
+        messages.success(req, 'Vote submitted successfully!')
+        return redirect('voting_pole', id=id)
 
-    q_id = id
-    ques = Question.objects.get(id=q_id)
-    opt = options.objects.filter(q_id_id=q_id)
-    
+    # total votes
+    total_vote = Vote_Click.objects.filter(opt_id__q_id=ques).count()
+
+    option = []
+
+    for o in opt:
+        vote_count = Vote_Click.objects.filter(
+            opt_id=o
+        ).count()
+
+        option.append({
+            'opt_count': vote_count,
+            'opt_data': o
+        })
+
     context = {
-        'ques':ques,
-        'opt':opt
+        'ques': ques,
+        'opt': option,
+        'vote': True if user_vote else False,
+        'total': total_vote,
+        'user_choice_id': user_vote.opt_id.id if user_vote else None
     }
-    return render(req,"questionaries/voting-pole.html",context)
+
+    return render(req, "questionaries/voting-pole.html", context)
