@@ -8,7 +8,7 @@ class Category(models.Model):
 class Question(models.Model):
     ques = models.TextField(null=False)
     q_desc = models.TextField(null=True)
-    expiry = models.DateField()
+    expiry = models.DateTimeField()
     u_id = models.ForeignKey(User,on_delete=models.CASCADE)
     created_at= models.DateTimeField(auto_now_add=True)
 
