@@ -23,7 +23,41 @@
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-4 py-12 grid grid-cols-1 lg:grid-cols-3 gap-12">
+    <!-- Flash Messages -->
+    {% if messages %}
+    <div id="flash-messages" class="max-w-5xl mx-auto px-4 mt-6 space-y-3">
+        {% for message in messages %}
+        <div class="flex items-center justify-between p-4 rounded-2xl border transition-all animate-in fade-in slide-in-from-top-4 duration-500
+            {% if message.tags == 'success' %}
+                bg-emerald-50 dark:bg-emerald-500/10 border-emerald-200 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400
+            {% elif message.tags == 'error' %}
+                bg-rose-50 dark:bg-rose-500/10 border-rose-200 dark:border-rose-500/20 text-rose-700 dark:text-rose-400
+            {% elif message.tags == 'warning' %}
+                bg-amber-50 dark:bg-amber-500/10 border-amber-200 dark:border-amber-500/20 text-amber-700 dark:text-amber-400
+            {% else %}
+                bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-400
+            {% endif %}">
+            <div class="flex items-center gap-3">
+                {% if message.tags == 'success' %}
+                    <i data-lucide="check-circle" class="w-5 h-5"></i>
+                {% elif message.tags == 'error' %}
+                    <i data-lucide="alert-circle" class="w-5 h-5"></i>
+                {% elif message.tags == 'warning' %}
+                    <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                {% else %}
+                    <i data-lucide="info" class="w-5 h-5"></i>
+                {% endif %}
+                <p class="text-sm font-bold">{{ message }}</p>
+            </div>
+            <button onclick="this.parentElement.remove()" class="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors">
+                <i data-lucide="x" class="w-4 h-4"></i>
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main class="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
         
         <!-- Main Voting Area (Left 2 Columns) -->
         <div class="lg:col-span-2 space-y-8">
@@ -32,6 +66,20 @@
             <div class="space-y-4">
                 <div class="flex items-center gap-2">
                     <span class="bg-brand-600/10 text-brand-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">{{ ques.category|default:"General" }}</span>
+                    
+                    <!-- POLL STATUS CONTAINER -->
+                    {% if remaining_time == "Expired" %}
+                    <span class="bg-rose-500/10 text-rose-600 border border-rose-200 dark:border-rose-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                        EXPIRED
+                    </span>
+                    {% else %}
+                    <span class="bg-emerald-500/10 text-emerald-600 border border-emerald-200 dark:border-emerald-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        OPEN
+                    </span>
+                    {% endif %}
+                    
                     <span class="text-[10px] text-slate-400 font-bold uppercase">ID: #Q_{{ques.id}}</span>
                 </div>
                 <h1 class="text-3xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">{{ ques.ques }}</h1>
@@ -44,7 +92,7 @@
             <div class="bg-white/40 dark:bg-slate-900/40 backdrop-blur-md rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xl">
                 <div class="flex items-center justify-between mb-6">
                     <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">
-                        {% if vote %}Results Breakdown{% else %}Select an Option{% endif %}
+                        {% if vote and remaining_time == "Expired" %}Results Breakdown{% else %}Select an Option{% endif %}
                     </h3>
                     {% if vote %}
                     <span class="text-[10px] font-bold bg-emerald-500/10 text-emerald-500 px-2 py-1 rounded text-right">
@@ -57,34 +105,27 @@
                     {% csrf_token %}
                     
                     {% for o in opt %}
-                    <label class="block relative group {% if vote %}cursor-default{% else %}cursor-pointer{% endif %}">
+                    <label class="block relative group {% if vote or remaining_time == 'Expired' %}cursor-default{% else %}cursor-pointer{% endif %}">
                         <!-- Hidden Radio -->
                         <input type="radio" name="opt_id" value="{{ o.opt_data.id }}" 
                                class="peer sr-only" 
-                               {% if vote %}disabled{% endif %}
+                               {% if vote or remaining_time == 'Expired' %}disabled{% endif %}
                                {% if o.opt_data.id == user_choice_id %}checked{% endif %}>
                         
                         <!-- Option Card Container -->
                         <div class="relative overflow-hidden p-5 rounded-2xl border-2 transition-all duration-300 flex items-center justify-between
-                            {% if vote %}
-                                {% if o.opt_data.id == user_choice_id %}
-                                    border-brand-600 bg-brand-600/[0.03] dark:bg-brand-600/[0.05]
-                                {% else %}
-                                    border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 opacity-80
-                                {% endif %}
+                            {% if vote and o.opt_data.id == user_choice_id %}
+                                border-brand-600 bg-brand-600/[0.05] dark:bg-brand-600/[0.08] shadow-lg shadow-brand-600/5
+                            {% elif vote %}
+                                border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/30 opacity-80
                             {% else %}
                                 border-slate-100 dark:border-slate-800 bg-white/50 dark:bg-slate-950/50 hover:border-brand-300 peer-checked:border-brand-600 peer-checked:bg-brand-600/[0.02]
                             {% endif %}">
                             
-                            {% if total > 0 %}
+                            <!-- Progress bar fill -->
                             <div class="absolute inset-y-0 left-0 bg-brand-600/10 transition-all duration-1000 ease-out" 
-                                 style="width: {% widthratio o.opt_count total 100 %}%">
+                                 style="width: {% if total > 0 %}{% widthratio o.opt_count total 100 %}{% else %}0{% endif %}%">
                             </div>
-                            {% else %}
-                            <div class="absolute inset-y-0 left-0 bg-brand-600/10 transition-all duration-1000 ease-out" 
-                                 style="width:0%">
-                            </div>
-                            {% endif %}
                             
                             <div class="relative z-10 flex items-start gap-4">
                                 <!-- Selection Indicator -->
@@ -92,7 +133,7 @@
                                     {% if o.opt_data.id == user_choice_id %}
                                         bg-brand-600 border-brand-600 shadow-lg shadow-brand-600/30
                                     {% else %}
-                                        border-slate-200 dark:border-slate-700 {% if not vote %}peer-checked:border-brand-600 peer-checked:bg-brand-600{% endif %}
+                                        border-slate-200 dark:border-slate-700 {% if not vote and remaining_time != 'Expired' %}peer-checked:border-brand-600 peer-checked:bg-brand-600{% endif %}
                                     {% endif %}">
                                     <div class="w-2 h-2 rounded-full bg-white {% if o.opt_data.id == user_choice_id %}opacity-100{% else %}opacity-0{% endif %} transition-opacity"></div>
                                 </div>
@@ -102,15 +143,19 @@
                                     <span class="text-sm font-bold {% if o.opt_data.id == user_choice_id %}text-brand-600{% else %}text-slate-800 dark:text-slate-100{% endif %}">
                                         {{ o.opt_data.option }}
                                     </span>
-                                    {% if o.o_desc %}
+                                    {% if o.opt_data.o_desc %}
                                     <span class="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
                                         {{ o.opt_data.o_desc }}
                                     </span>
                                     {% endif %}
+                                    <!-- HIGHLIGHTED STATUS -->
+                                    {% if vote and o.opt_data.id == user_choice_id %}
+                                    <span class="text-[9px] font-black text-brand-600 uppercase tracking-tighter mt-1">Your Selection</span>
+                                    {% endif %}
                                 </div>
                             </div>
 
-                            <!-- Right Side Info (Always shows Percentage and Count) -->
+                            <!-- Right Side Info -->
                             <div class="relative z-10 flex items-center gap-3">
                                 <div class="text-right">
                                     <span class="text-sm font-black text-brand-600">
@@ -130,13 +175,18 @@
                     <!-- Submit Button -->
                     <button type="submit" id="btn" 
                         class="w-full mt-6 py-4 rounded-2xl font-black text-xs uppercase tracking-[0.2em] transition-all
-                        {% if vote %}
+                        {% if vote or remaining_time == 'Expired' %}
                             bg-slate-100 dark:bg-slate-800 text-slate-400 cursor-not-allowed border border-slate-200 dark:border-slate-700
                         {% else %}
                             bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:scale-[1.01] active:scale-95 hover:bg-brand-700
                         {% endif %}"
-                        {% if vote %}disabled{% endif %}>
-                        {% if vote %}
+                        {% if vote or remaining_time == 'Expired' %}disabled{% endif %}>
+                        {% if remaining_time == 'Expired' %}
+                            <span class="flex items-center justify-center gap-2">
+                                <i data-lucide="clock-off" class="w-4 h-4"></i>
+                                Poll Expired
+                            </span>
+                        {% elif vote %}
                             <span class="flex items-center justify-center gap-2">
                                 <i data-lucide="lock" class="w-4 h-4"></i>
                                 Vote Locked
@@ -205,7 +255,7 @@
                             </div>
                             <span class="text-[11px] font-bold text-slate-500">Time Left</span>
                         </div>
-                        <span class="text-xs font-black text-slate-900 dark:text-white">2d 14h 05m</span>
+                        <span class="text-xs font-black text-slate-900 dark:text-white">{{remaining_time}}</span>
                     </div>
 
                     <div class="flex items-center justify-between">
@@ -244,9 +294,7 @@
 
             <!-- Share Card -->
             <div class="bg-gradient-to-br from-brand-600 to-violet-700 rounded-[2.5rem] p-6 text-white shadow-xl shadow-brand-600/20 relative overflow-hidden group">
-                <!-- Abstract Glow -->
                 <div class="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-3xl group-hover:bg-white/20 transition-all"></div>
-                
                 <h3 class="text-sm font-black mb-2 relative z-10">Help decide!</h3>
                 <p class="text-[11px] text-white/80 leading-relaxed mb-6 relative z-10">Share this poll with your network to get a more accurate community representation.</p>
                 <div class="flex gap-2 relative z-10">
@@ -271,14 +319,22 @@
                 lucide.createIcons();
             }
 
-            // Logic for visual feedback on click (before submission)
+            // --- Flash Messages Logic ---
+            const flashContainer = document.getElementById('flash-messages');
+            if (flashContainer) {
+                // Auto-dismiss after 5 seconds
+                setTimeout(() => {
+                    flashContainer.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+                    setTimeout(() => flashContainer.remove(), 600);
+                }, 5000);
+            }
+
             const options = document.querySelectorAll('input[name="opt_id"]');
             const submitBtn = document.getElementById('btn');
 
             if (options.length > 0 && !submitBtn.disabled) {
                 options.forEach(opt => {
                     opt.addEventListener('change', () => {
-                        // Optional: Add pre-submission animation or sounds
                         console.log("Option selected:", opt.value);
                     });
                 });
@@ -288,7 +344,6 @@
         function copyPollLink() {
             const url = window.location.href;
             navigator.clipboard.writeText(url).then(() => {
-                // UI feedback for copy (Toast/Tooltip logic could go here)
                 const btn = event.currentTarget;
                 const originalContent = btn.innerHTML;
                 btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 mx-auto"></i>';
