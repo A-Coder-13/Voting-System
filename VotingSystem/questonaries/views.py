@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from .models import Category, Question, options,Vote_Click
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
+from datetime import timedelta
 
 # Create your views here.
 @login_required
@@ -38,7 +40,7 @@ def create_question(req):
             else:
                 option_list.append(option)
                 option=""
-        print(option_list)
+        # print(option_list)
 
         for dsc in opt_dsc_data:
             if dsc != ",":
@@ -46,7 +48,7 @@ def create_question(req):
             else:
                 desc_list.append(opt_dsc)
                 opt_dsc=""
-        print(desc_list)
+        # print(desc_list)
         
 
 
@@ -82,7 +84,7 @@ def feed_view(req):
             'ques_data':f
         })
 
-        print(feed_array)
+        # print(feed_array)
 
 
     context= {'feeds':feed_array}
@@ -123,7 +125,7 @@ def voting_pole(req, id):
         messages.success(req, 'Vote submitted successfully!')
         return redirect('voting_pole', id=id)
 
-    # total votes
+    
     total_vote = Vote_Click.objects.filter(opt_id__q_id=ques).count()
 
     option = []
@@ -137,13 +139,29 @@ def voting_pole(req, id):
             'opt_count': vote_count,
             'opt_data': o
         })
+    
+    now = timezone.now()
+    if ques.expiry > now:
+        diff= ques.expiry-now
+        # print(diff)
+        days = diff.days
+        hours = diff.seconds //3600
+        minutes = (diff.seconds %3600) //60
+        
+        remaining_time = f"{days}d {hours}h {minutes}m"
+    else:
+        remaining_time = "Expired"
+
+    
+
 
     context = {
         'ques': ques,
         'opt': option,
         'vote': True if user_vote else False,
         'total': total_vote,
-        'user_choice_id': user_vote.opt_id.id if user_vote else None
+        'user_choice_id': user_vote.opt_id.id if user_vote else None,
+        'remaining_time':remaining_time,
     }
 
     return render(req, "questionaries/voting-pole.html", context)
