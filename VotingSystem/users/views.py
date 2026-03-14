@@ -34,6 +34,7 @@ def reg(req):
     return render(req, 'users/regist.html')
 
 
+
 def user_login(req):
     if req.method == 'POST':
         identifier = req.POST.get('username')
@@ -64,7 +65,21 @@ def user_login(req):
 
     return render(req, 'users/login.html')
 
+
 def user_logout(req):
     logout(req)
     messages.success(req, "Logged out successfully!")
     return redirect('login')
+
+
+
+def forget_password(req):
+    return render(req, 'users/forget_password.html')
+
+
+
+def otp(req):
+    return render(req,'users/otp.html')
+
+def reset_password(req):
+    return render(req,'users/reset_password.html')
