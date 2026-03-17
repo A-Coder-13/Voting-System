@@ -3,6 +3,20 @@ from django.contrib.auth.models import User
 from .models import Ext_User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
+import random
+from django.core.mail import send_mail
+from django.conf import settings
+
+otp = random.randint(100000,999999)
+
+send_mail(
+    "Your OTP Code",
+    f"Your password reset OTP is {otp}",
+    settings.EMAIL_HOST_USER,
+    [email],
+    fail_silently=False
+)
+
 
 
 def reg(req):
