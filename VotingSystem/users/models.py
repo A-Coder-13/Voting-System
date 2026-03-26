@@ -7,7 +7,7 @@ class Ext_User(models.Model):
     gender = models.CharField(max_length=10)
     profession= models.CharField(max_length=100)
 
-class otp(models.Model):
+class PasswordOTP(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     otp = models.CharField(max_length=6)
     created_at= models.DateTimeField(auto_now_add=True)
