@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Ext_User, PasswordOTP
+from .models import Ext_User, PasswordOTP, UserProfile
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -134,3 +134,31 @@ def reset_password(req):
         else:
             messages.error(req, "Passwords do not match")
     return render(req,'users/reset_password.html')
+
+
+
+def edit_profile(req):
+    if req.method=='POST':
+        user = req.user
+        profile_pic = req.FILES.get('profile_pic')
+        username = req.POST.get('username')
+        dob = req.POST.get('DOB')
+        location = req.POST.get('location')
+        bio=req.POST.get('bio')
+
+        profile=UserProfile(
+            user_id=user,
+            profile_picture=profile_pic,
+            bio=bio,
+            location=location,
+            birth_date=dob
+            )
+        
+        username_object=User(
+            username=username
+        )
+
+
+        profile.file.name=f"${username_object.username}.jpg"
+
+
