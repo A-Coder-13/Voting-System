@@ -1,11 +1,14 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from .models import Ext_User, PasswordOTP, UserProfile
+from .models import *
+from questonaries.models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
 from django.conf import settings
 import random
+from django.utils import timezone
+from datetime import timedelta
 
 
 def reg(req):
@@ -166,6 +169,18 @@ def edit_profile(req):
 
 def profile_view(req):
     profile = UserProfile.objects.get(user_id=req.user)
-    return render(req,"users/profile.html",{'profile':profile})
+
+    now = timezone.now()
+    active_pole = Question.objects.filter(u_id=profile.user_id, expiry__lt=now)
+    t_pole =active_pole.count()
+
+    v
+
+
+    context={
+        'profile':profile,
+        'pole':t_pole,
+    }
+    return render(req,"users/profile.html",context)
 
 
