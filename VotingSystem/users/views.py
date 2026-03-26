@@ -138,27 +138,34 @@ def reset_password(req):
 
 
 def edit_profile(req):
+    user= req.user
+
+    profile, created = UserProfile.objects.get_or_create(user_id = user)
+
     if req.method=='POST':
-        user = req.user
-        profile_pic = req.FILES.get('profile_pic')
-        username = req.POST.get('username')
-        dob = req.POST.get('DOB')
-        location = req.POST.get('location')
-        bio=req.POST.get('bio')
 
-        profile=UserProfile(
-            user_id=user,
-            profile_picture=profile_pic,
-            bio=bio,
-            location=location,
-            birth_date=dob
-            )
-        
-        username_object=User(
-            username=username
-        )
+        profile.profile_picture = req.FILES.get('profile_pic')
+        profile.bio=req.POST.get('bio')
+        profile.location = req.POST.get('location')
+        profile.birth_date = req.POST.get('DOB')
+        profile.save()
 
 
-        profile.file.name=f"${username_object.username}.jpg"
+        user.username = req.POST.get('username')
+        user.save()
+
+        # profile.file.name=f"${username_object.username}.jpg"   for changing files name
+
+    print(profile)
+    context = {
+        'profile': profile,
+    }
+    
+    return render(req,"users/edit_profile.html",context=context)
+
+
+def profile_view(req):
+    profile = UserProfile.objects.get(user_id=req.user)
+    return render(req,"users/profile.html",{'profile':profile})
 
 

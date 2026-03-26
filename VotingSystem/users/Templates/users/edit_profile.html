@@ -74,12 +74,15 @@
                                 <i data-lucide="shapes" class="absolute w-12 h-12 text-white/80"></i>
                             </div>
                             <!-- Image Preview Element (Hidden by default) -->
-                            <img id="avatar-preview-img" class="hidden" src="" alt="Profile Preview">
+                            <img id="avatar-preview-img"
+                                class="{% if profile.profile_picture %}block{% else %}hidden{% endif %}"
+                                src="{% if profile.profile_picture %}{{ profile.profile_picture.url }}{% endif %}"
+                                alt="Profile Preview">
                         </div>
                     </div>
                     <label for="profile_pic" class="absolute -bottom-2 -right-2 p-3 bg-primary text-white rounded-xl shadow-xl cursor-pointer hover:bg-indigo-500 transition-colors border-4 border-white dark:border-slate-900">
                         <i data-lucide="camera" class="w-5 h-5"></i>
-                        <input type="file" id="profile_pic" class="hidden" accept="image/*">
+                        <input type="file" id="profile_pic" name="profile_pic" form="profile-form" class="hidden" accept="Image*\">
                     </label>
                 </div>
 
@@ -99,19 +102,9 @@
             </div>
 
             <!-- Profile Form -->
-            <form id="profile-form" class="p-8 sm:p-12 space-y-8">
+            <form id="profile-form" method="POST" enctype="multipart/form-data" class="p-8 sm:p-12 space-y-8">
+                {% csrf_token %}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <!-- Full Name Field -->
-                    <div class="space-y-2">
-                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
-                        <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
-                                <i data-lucide="user" class="w-5 h-5"></i>
-                            </div>
-                            <input type="text" name="fullname" class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium" placeholder="John Doe">
-                        </div>
-                    </div>
-
                     <!-- Username Field -->
                     <div class="space-y-2">
                         <label class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Username</label>
@@ -119,9 +112,9 @@
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
                                 <i data-lucide="at-sign" class="w-5 h-5"></i>
                             </div>
-                            <input type="text" name="username" class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium" placeholder="johndoe99">
+                            <input type="text" name="username" class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium" placeholder="johndoe99" value="{{user.username}}">
                         </div>
-                    </div>
+                    </div>      
 
                     <!-- Email Field (Read Only Style) -->
                     <div class="space-y-2">
@@ -130,7 +123,21 @@
                             <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400">
                                 <i data-lucide="mail" class="w-5 h-5"></i>
                             </div>
-                            <input type="email" name="email" readonly class="w-full pl-12 pr-4 py-4 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl cursor-not-allowed text-slate-500 font-medium" value="john@example.com">
+                            <input type="email" name="email" readonly class="w-full pl-12 pr-4 py-4 bg-slate-100 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-800 rounded-2xl cursor-not-allowed text-slate-500 font-medium" value="{{user.email}}">
+                        </div>
+                    </div>
+
+                     <!-- Birth Date Field -->
+                    <div class="space-y-2">
+                        <label class="text-sm font-bold text-slate-700 dark:text-slate-300 ml-1">Birth Date</label>
+                        <div class="relative group">
+                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-slate-400 group-focus-within:text-primary transition-colors">
+                                <i data-lucide="cake" class="w-5 h-5"></i>
+                            </div>
+                            <input type="date" 
+                                   name="DOB" 
+                                   value="{{profile.birth_date|date:'Y-m-d'}}"
+                                   class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium">
                         </div>
                     </div>
 
@@ -145,8 +152,9 @@
                                    name="location" 
                                    maxlength="150"
                                    class="w-full pl-12 pr-4 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium" 
-                                   placeholder="e.g. London, UK"
-                                   value="San Francisco, CA">
+                                    value="{{profile.location}}"
+                                    placeholder="e.g. London, UK"
+                                   >
                         </div>
                     </div>
                 </div>
@@ -163,7 +171,9 @@
                                   maxlength="300" 
                                   rows="4" 
                                   class="w-full p-5 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 rounded-2xl focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all text-slate-900 dark:text-white font-medium resize-none" 
-                                  placeholder="Tell us about yourself..."></textarea>
+                                  placeholder="Tell us about yourself...">
+                                  {{profile.bio}}
+                        </textarea>
                     </div>
                 </div>
 
@@ -232,43 +242,42 @@
 
         profileInput.addEventListener('change', function(e) {
             const file = e.target.files[0];
+
             if (file) {
                 const reader = new FileReader();
-                
+
                 reader.onload = function(event) {
-                    // Update preview image source
                     previewImg.src = event.target.result;
-                    
-                    // Toggle visibility: Show image, hide abstract pattern
                     previewImg.classList.remove('hidden');
                     defaultAvatarContent.classList.add('hidden');
-                    
-                    // Optional: Show success hint
-                    showToast("New photo ready to save!");
                 }
-                
+
                 reader.readAsDataURL(file);
+
             }
         });
 
-        // Toast Helper
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            const toastText = toast.querySelector('span');
-            toastText.textContent = message;
-            
-            toast.classList.remove('translate-y-32', 'opacity-0');
-            setTimeout(() => {
-                toast.classList.add('translate-y-32', 'opacity-0');
-            }, 3000);
-        }
 
-        // Handle Form Submission
-        document.getElementById('profile-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            showToast("Profile updated successfully!");
-            document.getElementById('update-time').textContent = "Just now";
-        });
+        
+        
+        // Toast Helper
+        // function showToast(message) {
+        //     const toast = document.getElementById('toast');
+        //     const toastText = toast.querySelector('span');
+        //     toastText.textContent = message;
+            
+        //     toast.classList.remove('translate-y-32', 'opacity-0');
+        //     setTimeout(() => {
+        //         toast.classList.add('translate-y-32', 'opacity-0');
+        //     }, 3000);
+        // }
+
+        // // Handle Form Submission
+        // document.getElementById('profile-form').addEventListener('submit', (e) => {
+        //     e.preventDefault();
+        //     showToast("Profile updated successfully!");
+        //     document.getElementById('update-time').textContent = "Just now";
+        // });
     </script>
 </body>
 </html>
