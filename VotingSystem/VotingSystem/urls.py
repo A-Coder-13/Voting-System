@@ -25,6 +25,7 @@ urlpatterns = [
     path('',include('home.url')),
     path('user/',include('users.url')),
     path('ques/',include('questonaries.url')),
+    path('comments/',include('Comments_Likes.url')),
 ]
 
 
