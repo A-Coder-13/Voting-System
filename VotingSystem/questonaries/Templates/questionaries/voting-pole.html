@@ -160,98 +160,126 @@
                 </form>
             </section>
 
-            <!-- Comments Section -->
-            <section class="space-y-8">
-                <h2 class="text-xl font-black text-slate-900 dark:text-white flex items-center gap-3">
-                    Discussion <span class="text-sm font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded-lg">{{ comments|length }}</span>
-                </h2>
+            <!-- Updated Comments Section -->
+            <section class="mt-20 space-y-12">
+                <!-- Sophisticated Header -->
+                <div class="relative flex items-center justify-between pb-8">
+                    <div class="z-10">
+                        <h3 class="text-3xl font-black tracking-tighter text-slate-900 dark:text-white flex items-center gap-3">
+                            Voices <span class="text-brand-600">/</span> {{ comments|length }}
+                        </h3>
+                        <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-2">Deep dive into the community sentiment</p>
+                    </div>
+                    <!-- Decorative background element -->
+                    <div class="absolute -left-4 top-0 w-24 h-24 bg-brand-600/5 rounded-full blur-3xl -z-0"></div>
+                </div>
 
-                <!-- Main Input -->
-                <form action="{% url 'comments' %}" method="POST" class="flex gap-4">
-                    {% csrf_token %}
-                    <input type="hidden" name="ques" value="{{ ques.id }}">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ request.user.username }}" 
-                         class="w-12 h-12 rounded-2xl bg-brand-100 shrink-0" alt="Me">
-                    <div class="flex-grow">
-                        <textarea name="text" required placeholder="Share your thoughts on this poll..." 
-                            class="w-full bg-slate-50 dark:bg-slate-900 border-2 border-slate-100 dark:border-slate-800 rounded-2xl p-4 text-sm focus:border-brand-500/30 transition-all outline-none min-h-[100px] text-slate-700 dark:text-slate-300 resize-none"></textarea>
-                        <div class="flex justify-end mt-3">
-                            <button type="submit" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-8 py-3 rounded-xl text-xs font-black hover:scale-105 active:scale-95 transition-all">
-                                Post Comment
+                <!-- Floating Input Bar -->
+                <div class="group relative">
+                    <div class="absolute -inset-1 bg-gradient-to-r from-brand-600 to-purple-600 rounded-[3rem] blur opacity-20 group-focus-within:opacity-40 transition duration-1000"></div>
+                    <form action="{% url 'comments' ques.id %}" method="POST" class="relative bg-white dark:bg-slate-900 rounded-[2.8rem] border border-slate-200 dark:border-slate-800 p-3 pr-5 flex items-center gap-4 shadow-2xl transition-all focus-within:border-brand-500/50">
+                        {% csrf_token %}
+                        <input type="hidden" name="ques" value="{{ ques.id }}">
+                        
+                        <div class="shrink-0 p-1">
+                            <img src="{% if profile_pic %}{{profile_pic}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{request.user.username}}{% endif %}" 
+                                class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 dark:border-slate-800 shadow-inner" alt="Me">
+                        </div>
+
+                        <input name="text" required placeholder="Add to the conversation..." 
+                            class="flex-grow bg-transparent border-none text-base focus:ring-0 focus:outline-none placeholder:text-slate-400 text-slate-700 dark:text-slate-200 py-5">
+
+                        <div class="flex items-center gap-3">
+                            <button type="submit" class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all shadow-xl">
+                                <i data-lucide="arrow-up" class="w-6 h-6"></i>
                             </button>
                         </div>
-                    </div>
-                </form>
+                    </form>
+                </div>
 
-                <!-- Comments List -->
-                <div class="space-y-8">
+                <!-- Conversation Flux -->
+                <div class="space-y-12">
                     {% for comment in comments %}
-                    <div class="flex gap-4 group/comment" id="comment-{{ comment.id }}" x-data="{ showReply: false }">
-                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ comment.user_id.username }}" 
-                             class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 shrink-0" alt="User">
-                        
-                        <div class="flex-grow space-y-2">
-                            <div class="flex items-center gap-2">
-                                <span class="text-sm font-black text-slate-900 dark:text-white">{{ comment.user_id.username }}</span>
-                                <span class="text-[10px] text-slate-400 font-bold uppercase">{{ comment.created_at|timesince }} ago</span>
+                    <div class="flex flex-col gap-4 relative">
+                        <!-- Comment Block -->
+                        <div class="flex items-end gap-4 {% if forloop.counter|divisibleby:2 %}flex-row-reverse{% endif %}">
+                            <!-- Avatar with pulse ring -->
+                            <div class="relative shrink-0 mb-2">
+                                <div class="absolute inset-0 bg-brand-500 rounded-2xl animate-ping opacity-20 group-hover:opacity-40"></div>
+                                {% if comment.user_id.profile.profile_picture %}
+                                <img src="{{comment.user_id.profile.profile_picture}}" 
+                                    class="relative w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 z-10" alt="User">
+                                {% else %}
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{comment.user_id.username}}" 
+                                    class="relative w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 z-10" alt="User">
+                                {% endif %}
                             </div>
 
-                            <div class="text-sm text-slate-600 dark:text-slate-400 leading-relaxed bg-slate-50 dark:bg-slate-900/40 p-5 rounded-3xl rounded-tl-none border border-slate-100 dark:border-slate-800/50">
-                                {{ comment.text }}
-                            </div>
-
-                            <!-- Comment Actions -->
-                            <div class="flex items-center gap-6 text-[11px] font-black text-slate-400 px-2 pt-1">
-                                <form action="{% url 'like-comment' comment.id %}" method="POST">
-                                    {% csrf_token %}
-                                    <button type="submit" class="hover:text-brand-600 flex items-center gap-1.5 transition-colors">
-                                        <i data-lucide="thumbs-up" class="w-3.5 h-3.5"></i>
-                                        <span>Like</span>
-                                    </button>
-                                </form>
-
-                                <button @click="showReply = !showReply; $nextTick(() => lucide.createIcons())" class="hover:text-brand-600 flex items-center gap-1.5 transition-colors">
-                                    <i data-lucide="message-square" class="w-3.5 h-3.5"></i>
-                                    <span>Reply</span>
-                                </button>
-                            </div>
-
-                            <!-- Reply Form -->
-                            <div x-show="showReply" x-collapse class="mt-4">
-                                <form action="{% url 'replies' %}" method="POST" class="flex gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
-                                    {% csrf_token %}
-                                    <input type="hidden" name="comment_id" value="{{ comment.id }}">
-                                    <input type="text" name="text" required placeholder="Write a reply..." 
-                                           class="flex-grow bg-slate-50 dark:bg-slate-800 border-none rounded-xl px-4 py-2 text-sm focus:ring-2 focus:ring-brand-500/20 outline-none">
-                                    <button type="submit" class="bg-brand-600 text-white px-4 py-2 rounded-xl text-xs font-bold">Post</button>
-                                </form>
-                            </div>
-
-                            <!-- Replies Thread -->
-                            {% if comment.commentsreply_set.all %}
-                            <div class="mt-6 ml-6 pl-6 border-l-2 border-slate-100 dark:border-slate-800 space-y-6">
-                                {% for reply in comment.commentsreply_set.all %}
-                                <div class="flex gap-3">
-                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ reply.user_id.username }}" 
-                                         class="w-8 h-8 rounded-xl bg-slate-100 shrink-0">
-                                    <div class="flex-grow space-y-1">
-                                        <div class="flex items-center gap-2">
-                                            <span class="text-xs font-black text-slate-900 dark:text-white">{{ reply.user_id.username }}</span>
-                                            <span class="text-[9px] text-slate-400 font-bold">{{ reply.created_at|timesince }}</span>
-                                        </div>
-                                        <div class="text-xs text-slate-600 dark:text-slate-400 bg-white dark:bg-slate-800/50 p-3 rounded-2xl border border-slate-100 dark:border-slate-800/80">
-                                            {{ reply.text }}
-                                        </div>
+                            <!-- Speech Bubble -->
+                            <div class="max-w-[85%] space-y-2">
+                                <div class="px-6 py-4 rounded-[2rem] shadow-sm border transition-all duration-500
+                                    {% if forloop.counter|divisibleby:2 %}
+                                        bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-br-none border-slate-900 dark:border-white
+                                    {% else %}
+                                        bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-none border-slate-100 dark:border-slate-700
+                                    {% endif %}">
+                                    
+                                    <div class="flex items-center gap-2 mb-2 opacity-60">
+                                        <span class="text-[10px] font-black uppercase tracking-widest">{{comment.user_id.username}}</span>
+                                        <span class="w-1 h-1 rounded-full bg-current"></span>
+                                        <span class="text-[10px] font-bold">12m</span>
                                     </div>
+
+                                    <p class="text-sm leading-relaxed font-medium">
+                                        {{comment.text}}
+                                    </p>
                                 </div>
-                                {% endfor %}
+
+                                <!-- Action Bar -->
+                                <div class="flex items-center gap-4 px-4 {% if forloop.counter|divisibleby:2 %}flex-row-reverse{% endif %}">
+                                    <button class="group flex items-center gap-1.5">
+                                        <div class="p-2 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-rose-500/10 transition-colors">
+                                            <i data-lucide="heart" class="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-500"></i>
+                                        </div>
+                                        <span class="text-[10px] font-black text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">12</span>
+                                    </button>
+                                    
+                                    <button onclick="openReply('{{comment.id}}')" class="group flex items-center gap-1.5">
+                                        <div class="p-2 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-brand-500/10 transition-colors">
+                                            <i data-lucide="message-circle" class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-500"></i>
+                                        </div>
+                                        <span class="text-[10px] font-black text-slate-400">Reply</span>
+                                    </button>
+
+                                    
+                                </div>
                             </div>
-                            {% endif %}
+                        </div>
+
+                        <!-- Inline Thread/Reply Box -->
+                        <div id="reply-container-{{comment.id}}" class="hidden mt-2 ml-14 mr-14 animate-in zoom-in-95 duration-200">
+                            <div class="bg-slate-50 dark:bg-slate-800/30 p-5 rounded-[2.5rem] border-2 border-dashed border-slate-200 dark:border-slate-700 focus-within:border-brand-500/50 transition-all">
+                                <div class="flex gap-4 items-center">
+                                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{request.user.username}}" class="w-10 h-10 rounded-full border border-white" />
+                                    <input type="text" placeholder="Replying to {{comment.user_id.username}}..." 
+                                        class="bg-transparent border-none text-sm flex-grow focus:ring-0 focus:outline-none dark:text-white py-2" />
+                                    <button class="bg-brand-600 text-white p-3 rounded-full hover:rotate-12 transition-all shadow-lg shadow-brand-600/20">
+                                        <i data-lucide="send" class="w-4 h-4"></i>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% empty %}
-                    <div class="text-center py-12 bg-slate-50 dark:bg-slate-900/50 rounded-[2.5rem]">
-                        <p class="text-slate-400 text-sm font-bold">Be the first to start the conversation!</p>
+                    <!-- Stylized Empty State -->
+                    <div class="text-center py-24 relative overflow-hidden rounded-[4rem] bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800">
+                        <div class="relative z-10">
+                            <div class="w-20 h-20 bg-white dark:bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl rotate-3">
+                                <i data-lucide="sparkles" class="w-10 h-10 text-brand-600 animate-pulse"></i>
+                            </div>
+                            <h4 class="text-xl font-black text-slate-900 dark:text-white">Be the Catalyst</h4>
+                            <p class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-2">Start the conversation below</p>
+                        </div>
                     </div>
                     {% endfor %}
                 </div>
@@ -340,5 +368,22 @@
                 lucide.createIcons();
             }, 2000);
         }
-    </script>
+        
+        function openReply(id) {
+        const container = document.getElementById(`reply-container-${id}`);
+        const isHidden = container.classList.contains('hidden');
+        
+        // Close others
+        document.querySelectorAll('[id^="reply-container-"]').forEach(el => el.classList.add('hidden'));
+        
+        if (isHidden) {
+            container.classList.remove('hidden');
+            // Small delay to ensure the element is visible before focusing
+            setTimeout(() => {
+                const input = container.querySelector('input');
+                input.focus();
+            }, 10);
+        }
+    }
+   </script>
 {% endblock %}

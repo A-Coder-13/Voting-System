@@ -1,6 +1,8 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import Category, Question, options,Vote_Click
+from Comments_Likes.models import *
+from users.models import *
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -154,6 +156,17 @@ def voting_pole(req, id):
         remaining_time = "Expired"
 
     
+    try:
+        profile = UserProfile.objects.get(user_id=id)
+        profile_pic = profile.profile_picture.url if profile.profile_picture else None
+    except UserProfile.DoesNotExist:
+        profile_pic=None
+
+
+    comments = Comments.objects.filter(q_id = id)
+
+
+    
 
 
     context = {
@@ -163,6 +176,8 @@ def voting_pole(req, id):
         'total': total_vote,
         'user_choice_id': user_vote.opt_id.id if user_vote else None,
         'remaining_time':remaining_time,
+        'profile_pic':profile_pic,
+        'comments':comments,
     }
 
     return render(req, "questionaries/voting-pole.html", context)
