@@ -14,7 +14,7 @@ class PasswordOTP(models.Model):
     created_at= models.DateTimeField(auto_now_add=True)
 
 class UserProfile(models.Model):
-    user_id = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True)
+    user_id = models.OneToOneField(User,on_delete=models.CASCADE,primary_key=True,related_name='profile')
     profile_picture = models.ImageField(
         upload_to='images/profile_pictures/%Y/%m/%d/',
         validators=[FileExtensionValidator(

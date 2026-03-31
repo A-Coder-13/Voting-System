@@ -1,32 +1,26 @@
 {% extends 'home/layout.html' %}
 
 {% block content %}
-<!-- Header -->
-<header
-    class="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
+<header class="sticky top-0 z-40 bg-white/70 dark:bg-slate-900/70 backdrop-blur-xl border-b border-slate-200 dark:border-slate-800">
     <div class="max-w-5xl mx-auto px-4 h-16 flex items-center justify-between">
-        <a href="{% url 'feeds' %}"
-            class="flex items-center gap-2 group text-slate-500 hover:text-brand-600 transition-colors">
+        <a href="{% url 'feeds' %}" class="flex items-center gap-2 group text-slate-500 hover:text-brand-600 transition-colors">
             <i data-lucide="arrow-left" class="w-4 h-4"></i>
             <span class="text-xs font-bold uppercase tracking-tight">Back to Feed</span>
         </a>
 
         <div class="flex items-center gap-4">
-            <button onclick="toggleTheme()"
-                class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-brand-600 transition-colors">
+            <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:text-brand-600 transition-colors">
                 <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
                 <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
             </button>
 
             <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-purple-500 p-0.5">
-                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ request.user.username }}"
-                    class="w-full h-full rounded-full bg-white dark:bg-slate-900" alt="Avatar">
+                <img src="{% if user.profile.profile_picture %}{{user.profile.profile_picture.url}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{request.user.username}}{% endif %}" class="w-full h-full rounded-full bg-white dark:bg-slate-900" alt="Avatar">
             </div>
         </div>
     </div>
 </header>
 
-<!-- Flash Messages -->
 {% if messages %}
 <div id="flash-messages" class="max-w-5xl mx-auto px-4 mt-6 space-y-3">
     {% for message in messages %}
@@ -39,12 +33,10 @@
                 bg-blue-50 dark:bg-blue-500/10 border-blue-200 dark:border-blue-500/20 text-blue-700 dark:text-blue-400
             {% endif %}">
         <div class="flex items-center gap-3">
-            <i data-lucide="{% if message.tags == 'success' %}check-circle{% else %}info{% endif %}"
-                class="w-5 h-5"></i>
+            <i data-lucide="{% if message.tags == 'success' %}check-circle{% else %}info{% endif %}" class="w-5 h-5"></i>
             <p class="text-sm font-bold">{{ message }}</p>
         </div>
-        <button onclick="this.parentElement.remove()"
-            class="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors">
+        <button onclick="this.parentElement.remove()" class="p-1 hover:bg-black/5 dark:hover:bg-white/5 rounded-lg transition-colors">
             <i data-lucide="x" class="w-4 h-4"></i>
         </button>
     </div>
@@ -54,24 +46,19 @@
 
 <main class="max-w-5xl mx-auto px-4 py-8 grid grid-cols-1 lg:grid-cols-3 gap-12">
 
-    <!-- Main Content (Left) -->
     <div class="lg:col-span-2 space-y-12">
 
-        <!-- Question Header -->
         <div class="space-y-4">
             <div class="flex items-center gap-2">
-                <span
-                    class="bg-brand-600/10 text-brand-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">{{ques.category|default:"General" }}</span>
+                <span class="bg-brand-600/10 text-brand-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">{{ ques.category|default:"General" }}</span>
 
                 {% if remaining_time == "Expired" %}
-                <span
-                    class="bg-rose-500/10 text-rose-600 border border-rose-200 dark:border-rose-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="bg-rose-500/10 text-rose-600 border border-rose-200 dark:border-rose-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
                     EXPIRED
                 </span>
                 {% else %}
-                <span
-                    class="bg-emerald-500/10 text-emerald-600 border border-emerald-200 dark:border-emerald-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
+                <span class="bg-emerald-500/10 text-emerald-600 border border-emerald-200 dark:border-emerald-500/20 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider flex items-center gap-1.5">
                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
                     OPEN
                 </span>
@@ -79,14 +66,11 @@
 
                 <span class="text-[10px] text-slate-400 font-bold uppercase">ID: #Q_{{ques.id}}</span>
             </div>
-            <h1 class="text-3xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">{{ ques.ques }}
-            </h1>
+            <h1 class="text-3xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">{{ ques.ques }}</h1>
             <p class="text-slate-500 dark:text-slate-400 leading-relaxed">{{ ques.q_desc }}</p>
         </div>
 
-        <!-- Voting Form -->
-        <section
-            class="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xl">
+        <section class="bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 border border-slate-200 dark:border-slate-800 shadow-xl">
             <div class="flex items-center justify-between mb-8">
                 <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">
                     {% if vote or remaining_time == "Expired" %}Results Breakdown{% else %}Select an Option{% endif %}
@@ -103,13 +87,10 @@
                 <input type="hidden" name="question_id" value="{{ ques.id }}">
 
                 {% for o in opt %}
-                <label
-                    class="block relative group {% if vote or remaining_time == 'Expired' %}cursor-default{% else %}cursor-pointer{% endif %}">
+                <label class="block relative group {% if vote or remaining_time == 'Expired' %}cursor-default{% else %}cursor-pointer{% endif %}">
                     <input type="radio" name="opt_id" value="{{ o.opt_data.id }}" class="peer sr-only"
-                     {% if vote or remaining_time == 'Expired' %}
-                        disabled
-                     {% endif %}
-                      {% if o.opt_data.id == user_choice_id %}checked{%endif %}>
+                     {% if vote or remaining_time == 'Expired' %} disabled {% endif %}
+                     {% if o.opt_data.id == user_choice_id %}checked{% endif %}>
 
                     <div class="relative overflow-hidden p-5 rounded-2xl border-2 transition-all duration-300 flex items-center justify-between
                             {% if vote and o.opt_data.id == user_choice_id %}
@@ -120,34 +101,26 @@
                                 border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-950 hover:border-brand-300 peer-checked:border-brand-600
                             {% endif %}">
 
-                        <!-- Dynamic Progress Bar -->
                         <div class="absolute inset-y-0 left-0 bg-brand-600/10 transition-all duration-1000 ease-out z-0"
                             style="width: {% if total > 0 %}{% widthratio o.opt_count total 100 %}{% else %}0{% endif %}%">
                         </div>
 
                         <div class="relative z-10 flex items-start gap-4">
                             <div class="mt-1 w-6 h-6 shrink-0 rounded-full border-2 transition-all flex items-center justify-center
-                                    {% if o.opt_data.id == user_choice_id %}
-                                        bg-brand-600 border-brand-600
-                                    {% else %}
-                                        border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 peer-checked:border-brand-600
-                                    {% endif %}">
-                                <div
-                                    class="w-2 h-2 rounded-full bg-white {% if o.opt_data.id == user_choice_id %}opacity-100{% else %}opacity-0{% endif %} transition-opacity">
-                                </div>
+                                    {% if o.opt_data.id == user_choice_id %} bg-brand-600 border-brand-600
+                                    {% else %} border-slate-200 dark:border-slate-700 peer-checked:bg-brand-600 peer-checked:border-brand-600 {% endif %}">
+                                <div class="w-2 h-2 rounded-full bg-white {% if o.opt_data.id == user_choice_id %}opacity-100{% else %}opacity-0{% endif %} transition-opacity"></div>
                             </div>
 
                             <div class="flex flex-col">
-                                <span
-                                    class="text-sm font-bold {% if o.opt_data.id == user_choice_id %}text-brand-600{% else %}text-slate-800 dark:text-slate-100{% endif %}">
+                                <span class="text-sm font-bold {% if o.opt_data.id == user_choice_id %}text-brand-600{% else %}text-slate-800 dark:text-slate-100{% endif %}">
                                     {{ o.opt_data.option }}
                                 </span>
                                 {% if o.opt_data.o_desc %}
                                 <span class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ o.opt_data.o_desc}}</span>
                                 {% endif %}
                                 {% if vote and o.opt_data.id == user_choice_id %}
-                                <span class="text-[9px] font-black text-brand-600 uppercase tracking-tighter mt-1">Your
-                                    Selection</span>
+                                <span class="text-[9px] font-black text-brand-600 uppercase tracking-tighter mt-1">Your Selection</span>
                                 {% endif %}
                             </div>
                         </div>
@@ -156,8 +129,7 @@
                             <span class="text-sm font-black text-brand-600">
                                 {% if total > 0 %}{% widthratio o.opt_count total 100 %}%{% else %}0%{% endif %}
                             </span>
-                            <p class="text-[9px] font-bold text-slate-400 uppercase">{{ o.opt_count|default:0 }} votes
-                            </p>
+                            <p class="text-[9px] font-bold text-slate-400 uppercase">{{ o.opt_count|default:0 }} votes</p>
                         </div>
                     </div>
                 </label>
@@ -169,7 +141,7 @@
                         {% else %}
                             bg-brand-600 text-white shadow-lg shadow-brand-600/20 hover:bg-brand-700 active:scale-95
                         {% endif %}"
-                         {% if vote or remaining_time == 'Expired' %} disabled {% endif %}>
+                        {% if vote or remaining_time == 'Expired' %} disabled {% endif %}>
                     {% if remaining_time == 'Expired' %}Poll Expired
                     {% elif vote %}Vote Locked
                     {% else %}Cast Your Vote{% endif %}
@@ -177,152 +149,148 @@
             </form>
         </section>
 
-        <!-- Updated Comments Section -->
         <section class="mt-20 space-y-12">
+
             <!-- Sophisticated Header -->
+
             <div class="relative flex items-center justify-between pb-8">
+
                 <div class="z-10">
+
                     <h3
+
                         class="text-3xl font-black tracking-tighter text-slate-900 dark:text-white flex items-center gap-3">
+
                         Voices <span class="text-brand-600">/</span> {{ comments|length }}
+
                     </h3>
+
                     <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-2">Deep dive into the
+
                         community sentiment</p>
+
                 </div>
+
                 <!-- Decorative background element -->
+
                 <div class="absolute -left-4 top-0 w-24 h-24 bg-brand-600/5 rounded-full blur-3xl -z-0"></div>
+
             </div>
+
+
 
             <!-- Floating Input Bar -->
+
             <div class="group relative">
+
                 <div
+
                     class="absolute -inset-1 bg-gradient-to-r from-brand-600 to-purple-600 rounded-[3rem] blur opacity-20 group-focus-within:opacity-40 transition duration-1000">
+
                 </div>
+
                 <form action="{% url 'comments' ques.id %}" method="POST"
+
                     class="relative bg-white dark:bg-slate-900 rounded-[2.8rem] border border-slate-200 dark:border-slate-800 p-3 pr-5 flex items-center gap-4 shadow-2xl transition-all focus-within:border-brand-500/50">
+
                     {% csrf_token %}
+
                     <input type="hidden" name="ques" value="{{ ques.id }}">
 
+
+
                     <div class="shrink-0 p-1">
-                        <img src="{% if profile_pic %}{{profile_pic}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{request.user.username}}{% endif %}"
+
+                        <img src="{% if user.profile.profile_picture %}{{user.profile.profile_picture.url}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{request.user.username}}{% endif %}"
                             class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 dark:border-slate-800 shadow-inner"
+
                             alt="Me">
+
                     </div>
+
+
 
                     <input name="text" required placeholder="Add to the conversation..."
+
                         class="flex-grow bg-transparent border-none text-base focus:ring-0 focus:outline-none placeholder:text-slate-400 text-slate-700 dark:text-slate-200 py-5">
 
+
+
                     <div class="flex items-center gap-3">
+
                         <button type="submit"
+
                             class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all shadow-xl">
+
                             <i data-lucide="arrow-up" class="w-6 h-6"></i>
+
                         </button>
+
                     </div>
+
                 </form>
+
             </div>
 
-            <!-- Conversation Flux -->
-            <div class="space-y-12">
+            <div class="space-y-10">
                 {% for comment in comments %}
-                <div class="flex flex-col gap-4 relative">
-                    <!-- Comment Block -->
-                    <div class="flex items-end gap-4 {% if forloop.counter|divisibleby:2 %}flex-row-reverse{% endif %}">
-                        <!-- Avatar with pulse ring -->
-                        <div class="relative shrink-0 mb-2">
-                            <div
-                                class="absolute inset-0 bg-brand-500 rounded-2xl animate-ping opacity-20 group-hover:opacity-40">
+                <div class="thread-group">
+                    <div class="flex gap-4 group">
+                        <img src="{% if comment.comment.user_id.profile.profile_picture %}{{comment.comment.user_id.profile.profile_picture.url}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{comment.comment.user_id.username}}{% endif %}" 
+                             class="w-12 h-12 rounded-2xl bg-slate-100 dark:bg-slate-800 relative object-cover shadow-sm" alt="User">
+
+                        <div class="flex-grow space-y-3">
+                            <div class="bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700/50 p-5 rounded-[1.5rem] rounded-tl-none">
+                                <div class="flex items-center justify-between mb-2">
+                                    <span class="text-xs font-black text-slate-900 dark:text-white">@{{comment.comment.user_id.username}}</span>
+                                </div>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 leading-relaxed">{{comment.comment.text}}</p>
                             </div>
-                            {% if comment.user_id.profile.profile_picture %}
-                            <img src="{{comment.user_id.profile.profile_picture}}"
-                                class="relative w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 z-10" alt="User">
-                            {% else %}
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{comment.user_id.username}}"
-                                class="relative w-10 h-10 rounded-2xl bg-slate-100 dark:bg-slate-800 z-10" alt="User">
-                            {% endif %}
-                        </div>
 
-                        <!-- Speech Bubble -->
-                        <div class="max-w-[85%] space-y-2">
-                            <div class="px-6 py-4 rounded-[2rem] shadow-sm border transition-all duration-500
-                                    {% if forloop.counter|divisibleby:2 %}
-                                        bg-slate-900 dark:bg-white text-white dark:text-slate-900 rounded-br-none border-slate-900 dark:border-white
-                                    {% else %}
-                                        bg-white dark:bg-slate-800 text-slate-800 dark:text-slate-100 rounded-bl-none border-slate-100 dark:border-slate-700
-                                    {% endif %}">
+                            <div class="flex items-center gap-6 px-2">
+                                <button class="flex items-center gap-1.5 text-slate-400 hover:text-rose-500 transition-colors">
+                                    <i data-lucide="heart" class="w-4 h-4"></i>
+                                    <span class="text-[10px] font-black">24</span>
+                                </button>
+                                
+                                <button onclick="toggleReplySection('{{comment.comment.id}}')" class="flex items-center gap-1.5 text-slate-400 hover:text-brand-600 transition-colors">
+                                    <i data-lucide="message-circle" class="w-4 h-4"></i>
+                                    <span class="text-[10px] font-black uppercase tracking-tighter">
+                                        {{ comment.replies|length }} {% if comment.replies|length == 1 %}Reply{% else %}Replies{% endif %}
+                                    </span>
+                                </button>
+                            </div>
 
-                                <div class="flex items-center gap-2 mb-2 opacity-60">
-                                    <span
-                                        class="text-[10px] font-black uppercase tracking-widest">{{comment.user_id.username}}</span>
-                                    <span class="w-1 h-1 rounded-full bg-current"></span>
-                                    <span class="text-[10px] font-bold">12m</span>
+                            <div id="reply-section-{{comment.comment.id}}" class="hidden mt-4 space-y-6 animate-in slide-in-from-top-4 duration-300">
+                                
+                                <div class="pl-4">
+                                    <form action="{% url 'comment_reply' comment.comment.id %}" method="POST" class="flex gap-3">
+                                        {% csrf_token %}
+                                        <input type="text" name="text" placeholder="Replying to {{comment.comment.user_id.username}}..." 
+                                            class="flex-grow bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-2 text-xs focus:ring-1 focus:ring-brand-500 outline-none dark:text-white">
+                                        <button type="submit" class="bg-brand-600 text-white p-2 rounded-xl">
+                                            <i data-lucide="send" class="w-4 h-4"></i>
+                                        </button>
+                                    </form>
                                 </div>
 
-                                <p class="text-sm leading-relaxed font-medium">
-                                    {{comment.text}}
-                                </p>
-                            </div>
-
-                            <!-- Action Bar -->
-                            <div
-                                class="flex items-center gap-4 px-4 {% if forloop.counter|divisibleby:2 %}flex-row-reverse{% endif %}">
-                                <button class="group flex items-center gap-1.5">
-                                    <div
-                                        class="p-2 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-rose-500/10 transition-colors">
-                                        <i data-lucide="heart"
-                                            class="w-3.5 h-3.5 text-slate-400 group-hover:text-rose-500"></i>
+                                {% if comment.replies %}
+                                <div class="space-y-6 border-l-2 border-slate-100 dark:border-slate-800 ml-2 pl-6">
+                                    {% for reply in comment.replies %}
+                                    <div class="flex gap-3">
+                                        <img src="{% if reply.user_id.profile.profile_picture %}{{reply.user_id.profile.profile_picture.url}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{reply.user_id.username}}{% endif %}" class="w-8 h-8 rounded-xl shadow-sm">
+                                        <div class="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 p-4 rounded-2xl flex-grow shadow-sm">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-[11px] font-bold text-brand-600">@{{reply.user_id.username}}</span>
+                                            </div>
+                                            <p class="text-xs text-slate-500 dark:text-slate-400">{{reply.text}}</p>
+                                        </div>
                                     </div>
-                                    <span
-                                        class="text-[10px] font-black text-slate-400 group-hover:text-slate-900 dark:group-hover:text-white">12</span>
-                                </button>
-
-                                <button onclick="openReply('{{comment.id}}')" class="group flex items-center gap-1.5">
-                                    <div
-                                        class="p-2 rounded-full bg-slate-50 dark:bg-slate-800 group-hover:bg-brand-500/10 transition-colors">
-                                        <i data-lucide="message-circle"
-                                            class="w-3.5 h-3.5 text-slate-400 group-hover:text-brand-500"></i>
-                                    </div>
-                                    <span class="text-[10px] font-black text-slate-400">Reply</span>
-                                </button>
-
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Inline Thread/Reply Box -->
-                    <form action="{% url 'comment_reply' comment.id %}" method="POST">
-                        {% csrf_token %}
-                        <div id="reply-container-{{comment.id}}"
-                            class="hidden mt-2 ml-14 mr-14 animate-in zoom-in-95 duration-200">
-                            <div
-                                class="bg-slate-50 dark:bg-slate-800/30 p-5 rounded-[2.5rem] border-2 border-dashed border-slate-200 dark:border-slate-700 focus-within:border-brand-500/50 transition-all">
-                                <div class="flex gap-4 items-center">
-                                    <img src="{% if profile_pic %}{{profile_pic}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{request.user.username}}{% endif %}"
-                                        class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 dark:border-slate-800 shadow-inner"
-                                        alt="Me">
-                                    <input type="text" name="text" placeholder="Replying to {{comment.user_id.username}}..."
-                                        class="bg-transparent border-none text-sm flex-grow focus:ring-0 focus:outline-none dark:text-white py-2" />
-                                    <button type="submit"
-                                        class="bg-brand-600 text-white p-3 rounded-full hover:rotate-12 transition-all shadow-lg shadow-brand-600/20">
-                                        <i data-lucide="send" class="w-4 h-4"></i>
-                                    </button>
+                                    {% endfor %}
                                 </div>
+                                {% endif %}
                             </div>
                         </div>
-                    </form>
-                </div>
-                {% empty %}
-                <!-- Stylized Empty State -->
-                <div
-                    class="text-center py-24 relative overflow-hidden rounded-[4rem] bg-slate-50 dark:bg-slate-900/40 border border-slate-100 dark:border-slate-800">
-                    <div class="relative z-10">
-                        <div
-                            class="w-20 h-20 bg-white dark:bg-slate-800 rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl rotate-3">
-                            <i data-lucide="sparkles" class="w-10 h-10 text-brand-600 animate-pulse"></i>
-                        </div>
-                        <h4 class="text-xl font-black text-slate-900 dark:text-white">Be the Catalyst</h4>
-                        <p class="text-xs text-slate-500 font-bold uppercase tracking-widest mt-2">Start the
-                            conversation below</p>
                     </div>
                 </div>
                 {% endfor %}
@@ -330,7 +298,6 @@
         </section>
     </div>
 
-    <!-- Sidebar (Right) -->
     <aside class="space-y-8">
         <div class="bg-white dark:bg-slate-900 rounded-[2.5rem] p-6 border border-slate-200 dark:border-slate-800">
             <h3 class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-6">Poll Information</h3>
@@ -352,33 +319,25 @@
             <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
                 <p class="text-[10px] font-bold text-slate-400 mb-4">Posted By</p>
                 <div class="flex items-center gap-3 mb-4">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ques.u_id.username}}"
-                        class="w-10 h-10 rounded-xl bg-brand-100">
+                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ques.u_id.username}}" class="w-10 h-10 rounded-xl bg-brand-100">
                     <div>
-                        <p class="text-sm font-black text-slate-900 dark:text-white">
-                            {{ques.u_id.first_name|default:ques.u_id.username}}</p>
+                        <p class="text-sm font-black text-slate-900 dark:text-white">{{ques.u_id.first_name|default:ques.u_id.username}}</p>
                         <p class="text-[10px] text-slate-500 font-bold">@{{ques.u_id.username}}</p>
                     </div>
                 </div>
-                <button
-                    class="w-full py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Follow
-                    Author</button>
+                <button class="w-full py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Follow Author</button>
             </div>
         </div>
 
-        <!-- Share Card -->
-        <div
-            class="bg-brand-600 rounded-[2.5rem] p-6 text-white shadow-xl shadow-brand-600/20 relative overflow-hidden group">
+        <div class="bg-brand-600 rounded-[2.5rem] p-6 text-white shadow-xl shadow-brand-600/20 relative overflow-hidden group">
             <div class="absolute -top-12 -right-12 w-32 h-32 bg-white/10 rounded-full blur-3xl"></div>
             <h3 class="text-sm font-black mb-2">Help decide!</h3>
             <p class="text-[11px] text-white/80 leading-relaxed mb-6">Share this poll to get more perspectives.</p>
             <div class="flex gap-2">
-                <button class="flex-grow bg-white/20 p-3 rounded-xl hover:bg-white/30 transition-all"
-                    onclick="copyPollLink(this)">
+                <button class="flex-grow bg-white/20 p-3 rounded-xl hover:bg-white/30 transition-all" onclick="copyPollLink(this)">
                     <i data-lucide="link" class="w-4 h-4 mx-auto"></i>
                 </button>
-                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank"
-                    class="flex-grow bg-white/20 p-3 rounded-xl hover:bg-white/30 transition-all">
+                <a href="https://twitter.com/intent/tweet?url={{ request.build_absolute_uri }}" target="_blank" class="flex-grow bg-white/20 p-3 rounded-xl hover:bg-white/30 transition-all">
                     <i data-lucide="twitter" class="w-4 h-4 mx-auto"></i>
                 </a>
             </div>
@@ -389,51 +348,16 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         if (typeof lucide !== 'undefined') lucide.createIcons();
-
-        // Auto-dismiss messages
-        const flash = document.getElementById('flash-messages');
-        if (flash) {
-            setTimeout(() => {
-                flash.style.opacity = '0';
-                flash.style.transform = 'translateY(-10px)';
-                setTimeout(() => flash.remove(), 600);
-            }, 4000);
-        }
     });
 
-    function copyPollLink(btn) {
-        const url = window.location.href;
-        const tempInput = document.createElement("input");
-        tempInput.value = url;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand("copy");
-        document.body.removeChild(tempInput);
-
-        const original = btn.innerHTML;
-        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 mx-auto text-white"></i>';
-        lucide.createIcons();
-
-        setTimeout(() => {
-            btn.innerHTML = original;
-            lucide.createIcons();
-        }, 2000);
-    }
-
-    function openReply(id) {
-        const container = document.getElementById(`reply-container-${id}`);
-        const isHidden = container.classList.contains('hidden');
-
-        // Close others
-        document.querySelectorAll('[id^="reply-container-"]').forEach(el => el.classList.add('hidden'));
-
-        if (isHidden) {
-            container.classList.remove('hidden');
-            // Small delay to ensure the element is visible before focusing
-            setTimeout(() => {
-                const input = container.querySelector('input');
-                input.focus();
-            }, 10);
+    function toggleReplySection(id) {
+        const section = document.getElementById(`reply-section-${id}`);
+        if (section) {
+            section.classList.toggle('hidden');
+            if (!section.classList.contains('hidden')) {
+                const input = section.querySelector('input');
+                if (input) input.focus();
+            }
         }
     }
 </script>
