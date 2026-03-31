@@ -20,5 +20,5 @@ class Likes(models.Model):
 class CommentsReply(models.Model):
     text = models.TextField(null=False)
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    commit = models.ForeignKey(Comments,on_delete=models.CASCADE)
+    comment = models.ForeignKey(Comments,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

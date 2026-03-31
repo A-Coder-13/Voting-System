@@ -5,7 +5,6 @@ from .models import *
 from questonaries.models import models
 
 # Create your views here.
-login_required
 def comments(req,id):
     ques = Question.objects.get(id=id)
 
@@ -16,3 +15,16 @@ def comments(req,id):
             user_id = req.user
         )
     return redirect('voting_pole',ques.id)
+
+
+
+def comment_reply(req,id):
+    comment = Comments.objects.get(id=id)
+
+    CommentsReply.objects.create(
+        text = req.POST.get("text"),
+        user_id = req.user,
+        comment=comment,
+    )
+
+    return redirect('voting_pole', comment.q_id.id)
