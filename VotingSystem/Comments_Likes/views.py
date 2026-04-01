@@ -28,3 +28,11 @@ def comment_reply(req,id):
     )
 
     return redirect('voting_pole', comment.q_id.id)
+
+
+
+
+def comments_likes(req,id):
+    like = CommentsLikes.objects.filter(user_id = req.user,q_id = id).first()
+
+

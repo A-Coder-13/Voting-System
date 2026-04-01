@@ -11,7 +11,7 @@ class Comments(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
-class Likes(models.Model):
+class CommentsLikes(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     q_id = models.ForeignKey(Question,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
