@@ -155,21 +155,19 @@ def voting_pole(req, id):
     else:
         remaining_time = "Expired"
 
-    
-    # try:
-    #     profile = UserProfile.objects.get(user_id=ques.u_id)
-    #     profile_pic = profile.profile_picture.url if profile.profile_picture else None
-    # except UserProfile.DoesNotExist:
-    #     profile_pic=None
 
-    q_comments = Comments.objects.filter(q_id = id)
+    q_comments = Comments.objects.filter(q_id=id)
     comments = []
     for comment in q_comments:
         comments_replies = CommentsReply.objects.filter(comment=comment.id)
-        print(comment.user_id.profile.profile_picture)
+        comments_likes = CommentsLikes.objects.filter(c_id=comment.id)
+        isUserLikes=CommentsLikes.objects.filter(c_id=comment.id,user_id=req.user.id).exists()
+        
         comments.append({
             'comment':comment,
             'replies':comments_replies,
+            'likes':comments_likes,
+            'isUserLikes':isUserLikes,
         })
         
 
@@ -185,7 +183,6 @@ def voting_pole(req, id):
         'total': total_vote,
         'user_choice_id': user_vote.opt_id.id if user_vote else None,
         'remaining_time':remaining_time,
-        # 'profile_pic':profile_pic,
         'comments':comments,
     }
 

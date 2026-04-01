@@ -248,10 +248,11 @@
                             </div>
 
                             <div class="flex items-center gap-6 px-2">
-                                <form action="{% url 'comments_likes' comment.comment.id %}">
-                                <button type="submit" class="flex items-center gap-1.5 text-slate-400 hover:text-rose-500 transition-colors">
+                                <form method="POST" action="{% url 'comments_likes' comment.comment.id %}" >
+                                    {% csrf_token %}
+                                <button type="submit" class="flex items-center gap-1.5 {% if comment.isUserLikes %}text-rose-500 {%else%} text-slate-400 {% endif %} hover:text-rose-500 transition-colors">
                                     <i data-lucide="heart" class="w-4 h-4"></i>
-                                    <span class="text-[10px] font-black">24</span>
+                                    <span class="text-[10px] font-black">{{comment.likes|length}}</span>
                                 </button>
                                 </form>
                                 

@@ -13,7 +13,7 @@ class Comments(models.Model):
 
 class CommentsLikes(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
-    q_id = models.ForeignKey(Question,on_delete=models.CASCADE)
+    c_id = models.ForeignKey(Comments,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
 
 
