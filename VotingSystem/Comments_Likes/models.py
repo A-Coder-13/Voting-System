@@ -11,6 +11,12 @@ class Comments(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class PostLikes(models.Model):
+    user_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    q_id = models.ForeignKey(Question,on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    
 class CommentsLikes(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     c_id = models.ForeignKey(Comments,on_delete=models.CASCADE)
@@ -22,3 +28,5 @@ class CommentsReply(models.Model):
     user_id = models.ForeignKey(User,on_delete=models.CASCADE)
     comment = models.ForeignKey(Comments,on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+
+

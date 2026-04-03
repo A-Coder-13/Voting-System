@@ -82,9 +82,12 @@ def feed_view(req):
     feed_array=[]
     for f in feeds: 
         total = Vote_Click.objects.filter(opt_id__q_id=f).count()
+        likes = PostLikes.objects.filter(user_id=req.user.id,q_id=f.id).count()
+        print(likes)
         feed_array.append({
             'ques_vote_count':total,
-            'ques_data':f
+            'ques_data':f,
+            'likes': likes
         })
 
         # print(feed_array)

@@ -130,7 +130,8 @@
 
             {% for f in feeds %}
             <!-- Enhanced Poll Card -->
-             <a href="{% url 'voting_pole' f.ques_data.id %}">
+            
+            <a href="{% url 'voting_pole' f.ques_data.id %}">
             <div class="glass-card rounded-[2.5rem] p-6 lg:p-8 shadow-sm transition-all hover:shadow-xl hover:shadow-brand-600/5 group relative overflow-hidden">
                 <!-- Highlight bar on hover -->
                 <div class="absolute left-0 top-0 bottom-0 w-1 bg-brand-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
@@ -172,10 +173,13 @@
 
                 <div class="flex items-center justify-between pt-6 border-t border-slate-100 dark:border-slate-800">
                     <div class="flex items-center gap-5">
-                        <button class="flex items-center gap-1.5 text-slate-400 hover:text-red-500 transition-colors">
+                        <form method="POST" action="{% url 'post_likes' f.ques_data.id %}">
+                            {% csrf_token %}
+                        <button type="submit" class="flex items-center gap-1.5 text-slate-400 hover:text-red-500 transition-colors">
                             <i data-lucide="heart" class="w-4 h-4"></i>
-                            <span class="text-[11px] font-black">452</span>
+                            <span class="text-[11px] font-black">{{f.likes}}</span>
                         </button>
+                        </form>
                         <button class="flex items-center gap-1.5 text-slate-400 hover:text-brand-600 transition-colors">
                             <i data-lucide="share-2" class="w-4 h-4"></i>
                             <span class="text-[11px] font-black">Share</span>

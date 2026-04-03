@@ -18,6 +18,27 @@ def comments(req,id):
 
 
 
+
+def post_likes(req,id):
+    ques = Question.objects.get(id=id)
+
+    like = PostLikes.objects.filter(user_id=req.user,q_id=ques.id).first()
+
+    if like:
+        like.delete()
+    else:
+        PostLikes.objects.create(
+            user_id=req.user,
+            q_id=ques
+)
+    return redirect('feeds')
+
+
+
+
+
+
+
 def comment_reply(req,id):
     comment = Comments.objects.get(id=id)
 
