@@ -17,14 +17,19 @@ def create_question(req):
         q_desc = req.POST.get('q_desc')
         ex_date = req.POST.get('ex_date')
         category_id = req.POST.get('cat') 
+        hashtags= req.POST.get('hashtags')
         user = req.user
+
+        cat =Category.objects.get(id=category_id)
 
 
         # Create the Question
         question_obj = Question.objects.create(
             ques=ques_text,
             q_desc=q_desc,
+            hashtags=hashtags,
             expiry=ex_date,
+            cat_id=cat,
             u_id=user
         )
 
@@ -66,8 +71,10 @@ def create_question(req):
 
         messages.success(req, "Poll deployed successfully!")
         return redirect("feeds")  
+    
+    cat = Category.objects.all()
 
-    return render(req, "questionaries/ques_creation.html")
+    return render(req, "questionaries/ques_creation.html", {'category':cat})
 
 
 
@@ -82,12 +89,14 @@ def feed_view(req):
     feed_array=[]
     for f in feeds: 
         total = Vote_Click.objects.filter(opt_id__q_id=f).count()
-        likes = PostLikes.objects.filter(user_id=req.user.id,q_id=f.id).count()
+        likes = PostLikes.objects.filter(q_id=f.id).count()
+        user_liked = PostLikes.objects.filter(q_id=f.id,user_id=req.user.id).exists()
         print(likes)
         feed_array.append({
             'ques_vote_count':total,
             'ques_data':f,
-            'likes': likes
+            'likes': likes,
+            'user_liked':user_liked
         })
 
         # print(feed_array)
