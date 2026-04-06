@@ -2,3 +2,4 @@
 2.#tags in question model
 3.Feed page and home pg update
 4.Add new Fields in registration and question creation form 
+5.Explore pg logics
