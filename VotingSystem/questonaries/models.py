@@ -9,7 +9,9 @@ class Question(models.Model):
     ques = models.TextField(null=False)
     q_desc = models.TextField(null=True)
     expiry = models.DateTimeField()
+    hashtags = models.TextField(null=True)
     u_id = models.ForeignKey(User,on_delete=models.CASCADE)
+    cat_id = models.ForeignKey(Category,on_delete=models.PROTECT)
     created_at= models.DateTimeField(auto_now_add=True)
 
 
