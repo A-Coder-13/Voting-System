@@ -20,6 +20,7 @@ def reg(req):
         password = req.POST.get('password')
         gender = req.POST.get('gender')
         profession = req.POST.get('profession')
+        dob = req.POST.get('dob')
 
         u = User.objects.create_user(
             username=username,
@@ -34,6 +35,8 @@ def reg(req):
             gender=gender,
             profession=profession
         )
+
+        UserProfile.objects.create(birth_date = dob)
 
         return redirect('login')
 
