@@ -1,4 +1,8 @@
-1.create profile at the time of registration
-2.#tags in question model
+1.create profile at the time of registration (Done)
+2.#tags in question model (Done)
 3.Feed page and home pg update
-4.Add new Fields in registration and question creation form 
+4.Add new Fields in registration and question creation form  (Done) 
+5.Explore pg logics
+6. Profile pf Activity section
+7. is all users profile shows to any one
+8.Trending hashtags, sorting, and other filter

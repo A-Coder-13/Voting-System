@@ -80,18 +80,25 @@ def create_question(req):
 
 def feed_view(req):
     # print(req.user)
+    hashtag = req.GET.get('hashtag')
     feeds = None
+
     if req.user.is_authenticated:
-        feeds = Question.objects.exclude(u_id = req.user)
+        feeds = Question.objects.exclude(u_id = req.user,expiry__gt=timezone.now())
     else:
         feeds=Question.objects.all()
+
+
+    if hashtag:
+        feeds =feeds.filter(hashtags__icontains=hashtag)
+
+
 
     feed_array=[]
     for f in feeds: 
         total = Vote_Click.objects.filter(opt_id__q_id=f).count()
         likes = PostLikes.objects.filter(q_id=f.id).count()
         user_liked = PostLikes.objects.filter(q_id=f.id,user_id=req.user.id).exists()
-        print(likes)
         feed_array.append({
             'ques_vote_count':total,
             'ques_data':f,
