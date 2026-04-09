@@ -6,3 +6,4 @@
 6. Profile pf Activity section
 7. is all users profile shows to any one
 8.Trending hashtags, sorting, and other filter
+login required pg not directing login pg still

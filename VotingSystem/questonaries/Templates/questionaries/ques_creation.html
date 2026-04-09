@@ -34,7 +34,6 @@
         }
     </script>
     <style>
-        /* Force Dark Theme & Full Page Layout */
         body { background-color: #020617; color: #e2e8f0; }
         .glass-background {
             background: radial-gradient(circle at 50% 50%, rgba(99, 102, 241, 0.05) 0%, transparent 50%);
@@ -43,13 +42,16 @@
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 10px; }
         
-        /* Input Overrides for Dark Mode */
         input, textarea, select {
             background: rgba(15, 23, 42, 0.8) !important;
             border: 1px solid rgba(51, 65, 85, 0.5) !important;
             color: white !important;
         }
         input:focus { border-color: #6366f1 !important; box-shadow: 0 0 0 4px rgba(99, 102, 241, 0.1); }
+
+        .abstract-gradient {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
     </style>
 </head>
 <body class="min-h-screen relative overflow-x-hidden flex flex-col font-sans">
@@ -69,14 +71,7 @@
                 <span class="text-[9px] uppercase tracking-[0.3em] text-brand-400 font-bold">Creator Studio</span>
             </div>
         </div>
-        
-        
         <div class="flex items-center gap-6">
-            <a href="{% url 'profile' %}">
-                <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-brand-600 to-purple-500 p-0.5">
-                    <img src="{% if user.profile.profile_picture %}{{user.profile.profile_picture.url}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{request.user.username}}{% endif %}" class="w-full h-full rounded-full bg-white dark:bg-slate-900" alt="Avatar">
-                </div>
-            </a>
             <a href="{% url 'feeds' %}" class="group flex items-center gap-2 text-xs font-bold text-slate-400 hover:text-white transition-all">
                 <i data-lucide="x" class="w-4 h-4 group-hover:rotate-90 transition-transform"></i>
                 DISCARD
@@ -92,30 +87,36 @@
                     <i data-lucide="zap" class="w-8 h-8 text-brand-500"></i>
                 </div>
                 <h1 class="text-5xl font-black tracking-tighter mb-6 leading-tight">Create your<br><span class="text-brand-500">Masterpiece.</span></h1>
-                <p class="text-slate-400 leading-relaxed">
-                    Set the stage for a global conversation. Define your query, categorize your topic, and add unique choices for the community.
-                </p>
-                
-                <div class="mt-12 space-y-6">
-                    <div class="flex items-center gap-4 text-slate-500">
-                        <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-                            <i data-lucide="bar-chart-3" class="w-4 h-4 text-brand-400"></i>
-                        </div>
-                        <span class="text-xs font-bold uppercase tracking-widest">Real-time Analytics</span>
-                    </div>
-                    <div class="flex items-center gap-4 text-slate-500">
-                        <div class="w-8 h-8 rounded-lg bg-white/5 flex items-center justify-center">
-                            <i data-lucide="users" class="w-4 h-4 text-brand-400"></i>
-                        </div>
-                        <span class="text-xs font-bold uppercase tracking-widest">Global Reach</span>
-                    </div>
-                </div>
+                <p class="text-slate-400 leading-relaxed">A picture is worth a thousand votes. Add a compelling cover image to increase engagement on your poll.</p>
             </div>
         </div>
 
         <div class="lg:col-span-8">
-            <form id="form" method="POST" class="space-y-16 pb-24">
+            <form id="form" method="POST" enctype="multipart/form-data" class="space-y-12 pb-24">
                 {% csrf_token %}
+
+                <section class="space-y-4">
+                    <label class="block text-[10px] font-black uppercase tracking-widest text-brand-500 px-1">Question Cover Image</label>
+                    <div class="relative group cursor-pointer">
+                        <input  type="file" id="cover_image" name="img" class="absolute inset-0 w-full h-full opacity-0 z-20 cursor-pointer" accept="image/*" onchange="previewCover(this)">
+                        <div id="cover-preview-container" class="w-full h-64 rounded-[2rem] border-2 border-dashed border-white/10 bg-slate-900/50 flex flex-col items-center justify-center transition-all group-hover:border-brand-500/50 group-hover:bg-slate-900/80 relative overflow-hidden">
+                            
+                            <div id="cover-placeholder" class="flex flex-col items-center text-center p-6 transition-opacity duration-300">
+                                <div class="w-16 h-16 rounded-2xl bg-white/5 flex items-center justify-center mb-4">
+                                    <i data-lucide="image-plus" class="w-8 h-8 text-slate-500 group-hover:text-brand-500 transition-colors"></i>
+                                </div>
+                                <p class="text-sm font-bold text-slate-400">Click or drag to upload cover</p>
+                                <p class="text-[10px] text-slate-600 mt-2 uppercase tracking-widest">Supports JPG, PNG, WEBP (Max 5MB)</p>
+                            </div>
+
+                            <img id="cover-preview-img" class="absolute inset-0 w-full h-full object-cover hidden transition-transform duration-500 group-hover:scale-105">
+                            
+                            <button type="button" id="remove-cover" class="absolute top-4 right-4 z-30 p-2 bg-red-500/20 text-red-500 rounded-lg backdrop-blur-md opacity-0 transition-opacity hidden hover:bg-red-500 hover:text-white" onclick="clearCover(event)">
+                                <i data-lucide="trash-2" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </section>
 
                 <section class="space-y-8">
                     <div class="flex items-center gap-4">
@@ -126,14 +127,12 @@
                     <div class="grid grid-cols-1 gap-6">
                         <div class="group">
                             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 px-1">What is your question?</label>
-                            <input type="text" name="ques" placeholder="e.g., The best IDE for Python in 2026?" 
-                                class="w-full rounded-2xl px-6 py-5 text-lg font-bold outline-none transition-all">
+                            <input type="text" name="ques" placeholder="e.g., The best IDE for Python in 2026?" class="w-full rounded-2xl px-6 py-5 text-lg font-bold outline-none transition-all">
                         </div>
 
                         <div class="group">
                             <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 px-1">Context & Description</label>
-                            <textarea rows="4" name="q_desc" placeholder="Provide background information..." 
-                                class="w-full rounded-2xl px-6 py-4 text-sm outline-none transition-all resize-none"></textarea>
+                            <textarea rows="4" name="q_desc" placeholder="Provide background information..." class="w-full rounded-2xl px-6 py-4 text-sm outline-none transition-all resize-none"></textarea>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -156,7 +155,7 @@
                                 </div>
                             </div>
                             <div>
-                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 px-1">Trending Hashtags</label>
+                                <label class="block text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2 px-1">Hashtags</label>
                                 <div class="relative">
                                     <i data-lucide="hash" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-brand-500"></i>
                                     <input type="text" name="hashtags" placeholder="tech, ai, coding" class="w-full pl-12 pr-6 py-4 rounded-2xl text-sm outline-none">
@@ -169,14 +168,7 @@
                 <section class="space-y-8">
                     <div class="flex items-center gap-4">
                         <div class="h-px flex-1 bg-white/10"></div>
-                        <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-brand-500">02 / Choice Architecture</h2>
-                    </div>
-
-                    <div class="flex items-center justify-between">
-                        <p class="text-xs text-slate-500 font-medium">Add at least two options for your voters.</p>
-                        <button type="button" onclick="addOption()" class="bg-white text-darkest px-6 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 hover:bg-brand-500 hover:text-white transition-all">
-                            <i data-lucide="plus" class="w-3.5 h-3.5"></i> Add Option
-                        </button>
+                        <h2 class="text-[10px] font-black uppercase tracking-[0.4em] text-brand-500">02 / Choices</h2>
                     </div>
 
                     <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -185,10 +177,14 @@
                                 <span class="text-[10px] font-black text-brand-500 uppercase tracking-widest">Choice Alpha</span>
                                 <i data-lucide="grip-vertical" class="w-4 h-4 text-slate-700"></i>
                             </div>
-                            <input type="text" placeholder="Choice Title" class="opt w-full !bg-transparent !border-0 !border-b !border-white/10 p-0 pb-2 text-lg font-bold outline-none mb-3 focus:!border-brand-500">
-                            <input type="text" placeholder="Short description..." class="opt_dsc w-full !bg-transparent !border-0 p-0 text-xs text-slate-500 outline-none">
+                            <input type="text" placeholder="Title" class="opt w-full !bg-transparent !border-0 !border-b !border-white/10 p-0 pb-2 text-lg font-bold outline-none mb-3">
+                            <input type="text" placeholder="Description" class="opt_dsc w-full !bg-transparent !border-0 p-0 text-xs text-slate-500 outline-none">
                         </div>
                     </div>
+
+                    <button type="button" onclick="addOption()" class="w-full border-2 border-dashed border-white/10 py-4 rounded-2xl flex items-center justify-center gap-2 text-slate-500 hover:border-brand-500/50 hover:text-brand-500 transition-all text-xs font-bold uppercase tracking-widest">
+                        <i data-lucide="plus" class="w-4 h-4"></i> Add Another Choice
+                    </button>
                 </section>
 
                 <input name="opt_hidden" id="opt_hidden" type="hidden">
@@ -202,15 +198,47 @@
         </div>
     </main>
 
-    <footer class="mt-auto px-8 py-6 border-t border-white/5 text-center lg:text-left">
-        <p class="text-[9px] font-bold uppercase tracking-[0.3em] text-slate-600">
-            &copy; 2026 VoteSphere Network • encrypted & decentralized
-        </p>
-    </footer>
-
     <script>
         lucide.createIcons();
 
+        function previewCover(input) {
+            const container = document.getElementById('cover-preview-container');
+            const img = document.getElementById('cover-preview-img');
+            const placeholder = document.getElementById('cover-placeholder');
+            const removeBtn = document.getElementById('remove-cover');
+
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    img.src = e.target.result;
+                    img.classList.remove('hidden');
+                    placeholder.classList.add('opacity-0', 'pointer-events-none');
+                    removeBtn.classList.remove('hidden');
+                    removeBtn.classList.add('opacity-100');
+                    container.classList.add('border-solid', 'border-brand-500/50');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function clearCover(event) {
+            event.stopPropagation();
+            const input = document.getElementById('cover_image');
+            const img = document.getElementById('cover-preview-img');
+            const placeholder = document.getElementById('cover-placeholder');
+            const removeBtn = document.getElementById('remove-cover');
+            const container = document.getElementById('cover-preview-container');
+
+            input.value = "";
+            img.src = "";
+            img.classList.add('hidden');
+            placeholder.classList.remove('opacity-0', 'pointer-events-none');
+            removeBtn.classList.add('hidden');
+            removeBtn.classList.remove('opacity-100');
+            container.classList.remove('border-solid', 'border-brand-500/50');
+        }
+
+        // Keep your existing addOption and submit scripts
         function addOption() {
             const container = document.getElementById('options-container');
             const div = document.createElement('div');
@@ -222,13 +250,11 @@
                         <i data-lucide="trash-2" class="w-4 h-4"></i>
                     </button>
                 </div>
-                <input type="text" placeholder="Choice Title" class="opt w-full !bg-transparent !border-0 !border-b !border-white/10 p-0 pb-2 text-lg font-bold outline-none mb-3 focus:!border-brand-500">
+                <input type="text" placeholder="Title" class="opt w-full !bg-transparent !border-0 !border-b !border-white/10 p-0 pb-2 text-lg font-bold outline-none mb-3 focus:!border-brand-500">
                 <input type="text" placeholder="Short description..." class="opt_dsc w-full !bg-transparent !border-0 p-0 text-xs text-slate-500 outline-none">
             `;
             container.appendChild(div);
             lucide.createIcons();
-            // Smooth scroll to the new option on mobile
-            if(window.innerWidth < 1024) div.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
         document.getElementById('form').addEventListener('submit', function(e) {
@@ -236,7 +262,6 @@
             let descs = [];
             document.querySelectorAll('.opt').forEach(input => options.push(input.value));
             document.querySelectorAll('.opt_dsc').forEach(input => descs.push(input.value));
-            
             document.getElementById('opt_hidden').value = options.join(",");
             document.getElementById('opt_dsc_hidden').value = descs.join(",");
         });

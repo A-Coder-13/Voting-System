@@ -170,6 +170,11 @@ def edit_profile(req):
     return render(req,"users/edit_profile.html",context=context)
 
 
+
+
+
+
+
 def profile_view(req):
     try:
         profile = UserProfile.objects.get(user_id=req.user)
@@ -194,3 +199,34 @@ def profile_view(req):
     }
 
     return render(req, "users/profile.html", context)
+
+
+
+
+
+
+def other_profile_view(req,id):
+    try:
+        profile = UserProfile.objects.get(user_id=id)
+    except UserProfile.DoesNotExist:
+        profile = None
+
+    now = timezone.now()
+
+    # Active polls (expiry future me)
+    active_pole = Question.objects.filter(u_id=id, expiry__gt=now)
+    t_pole = active_pole.count()
+
+    # Total votes count
+    vote_cast = 0
+    for q in active_pole:
+        vote_cast += Vote_Click.objects.filter(opt_id__q_id=q.id).count()
+
+    context = {
+        'profile': profile,
+        'pole': t_pole,
+        'votes': vote_cast,
+        'active_poles':active_pole,
+    }
+
+    return render(req, "users/other_profile.html", context)
