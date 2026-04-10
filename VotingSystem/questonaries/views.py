@@ -18,6 +18,7 @@ def create_question(req):
         ex_date = req.POST.get('ex_date')
         category_id = req.POST.get('cat') 
         hashtags= req.POST.get('hashtags')
+        img = req.FILES.get('img')
         user = req.user
 
         cat =Category.objects.get(id=category_id)
@@ -30,6 +31,7 @@ def create_question(req):
             hashtags=hashtags,
             expiry=ex_date,
             cat_id=cat,
+            img=img,
             u_id=user
         )
 
@@ -188,10 +190,6 @@ def voting_pole(req, id):
             'likes':comments_likes,
             'isUserLikes':isUserLikes,
         })
-        
-
-
-
     
 
 

@@ -48,7 +48,7 @@
 
     <div class="lg:col-span-2 space-y-12">
 
-        <div class="space-y-4">
+        <div class="space-y-6">
             <div class="flex items-center gap-2">
                 <span class="bg-brand-600/10 text-brand-600 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider">{{ ques.category|default:"General" }}</span>
 
@@ -66,7 +66,18 @@
 
                 <span class="text-[10px] text-slate-400 font-bold uppercase">ID: #Q_{{ques.id}}</span>
             </div>
+            
             <h1 class="text-3xl font-black tracking-tight leading-tight text-slate-900 dark:text-white">{{ ques.ques }}</h1>
+
+            {% if ques.img %}
+            <div class="relative group overflow-hidden rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl bg-slate-100 dark:bg-slate-800">
+                <img src="{{ ques.img.url }}" 
+                     alt="{{ ques.ques }}" 
+                     class="w-full h-auto max-h-[450px] object-cover transition-transform duration-700 group-hover:scale-105">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-900/20 to-transparent"></div>
+            </div>
+            {% endif %}
+
             <p class="text-slate-500 dark:text-slate-400 leading-relaxed">{{ ques.q_desc }}</p>
         </div>
 
@@ -82,7 +93,7 @@
                 {% endif %}
             </div>
 
-            <form id="voteForm" method="POST" action="{% url 'create-ques' %}" class="space-y-4">
+            <form id="voteForm" method="POST" action="{% url 'voting_pole' ques.id %}" class="space-y-4">
                 {% csrf_token %}
                 <input type="hidden" name="question_id" value="{{ ques.id }}">
 
@@ -150,86 +161,36 @@
         </section>
 
         <section class="mt-20 space-y-12">
-
-            <!-- Sophisticated Header -->
-
             <div class="relative flex items-center justify-between pb-8">
-
                 <div class="z-10">
-
-                    <h3
-
-                        class="text-3xl font-black tracking-tighter text-slate-900 dark:text-white flex items-center gap-3">
-
+                    <h3 class="text-3xl font-black tracking-tighter text-slate-900 dark:text-white flex items-center gap-3">
                         Voices <span class="text-brand-600">/</span> {{ comments|length }}
-
                     </h3>
-
-                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-2">Deep dive into the
-
-                        community sentiment</p>
-
+                    <p class="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 mt-2">Deep dive into the community sentiment</p>
                 </div>
-
-                <!-- Decorative background element -->
-
                 <div class="absolute -left-4 top-0 w-24 h-24 bg-brand-600/5 rounded-full blur-3xl -z-0"></div>
-
             </div>
 
-
-
-            <!-- Floating Input Bar -->
-
             <div class="group relative">
-
-                <div
-
-                    class="absolute -inset-1 bg-gradient-to-r from-brand-600 to-purple-600 rounded-[3rem] blur opacity-20 group-focus-within:opacity-40 transition duration-1000">
-
-                </div>
-
+                <div class="absolute -inset-1 bg-gradient-to-r from-brand-600 to-purple-600 rounded-[3rem] blur opacity-20 group-focus-within:opacity-40 transition duration-1000"></div>
                 <form action="{% url 'comments' ques.id %}" method="POST"
-
                     class="relative bg-white dark:bg-slate-900 rounded-[2.8rem] border border-slate-200 dark:border-slate-800 p-3 pr-5 flex items-center gap-4 shadow-2xl transition-all focus-within:border-brand-500/50">
-
                     {% csrf_token %}
-
                     <input type="hidden" name="ques" value="{{ ques.id }}">
-
-
-
                     <div class="shrink-0 p-1">
-
                         <img src="{% if user.profile.profile_picture %}{{user.profile.profile_picture.url}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{request.user.username}}{% endif %}"
                             class="w-14 h-14 rounded-full object-cover border-2 border-slate-100 dark:border-slate-800 shadow-inner"
-
                             alt="Me">
-
                     </div>
-
-
-
                     <input name="text" required placeholder="Add to the conversation..."
-
                         class="flex-grow bg-transparent border-none text-base focus:ring-0 focus:outline-none placeholder:text-slate-400 text-slate-700 dark:text-slate-200 py-5">
-
-
-
                     <div class="flex items-center gap-3">
-
                         <button type="submit"
-
                             class="bg-slate-900 dark:bg-white text-white dark:text-slate-900 w-12 h-12 rounded-full flex items-center justify-center hover:scale-110 active:scale-90 transition-all shadow-xl">
-
                             <i data-lucide="arrow-up" class="w-6 h-6"></i>
-
                         </button>
-
                     </div>
-
                 </form>
-
             </div>
 
             <div class="space-y-10">
@@ -265,7 +226,6 @@
                             </div>
 
                             <div id="reply-section-{{comment.comment.id}}" class="hidden mt-4 space-y-6 animate-in slide-in-from-top-4 duration-300">
-                                
                                 <div class="pl-4">
                                     <form action="{% url 'comment_reply' comment.comment.id %}" method="POST" class="flex gap-3">
                                         {% csrf_token %}
@@ -322,13 +282,15 @@
             <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
                 <p class="text-[10px] font-bold text-slate-400 mb-4">Posted By</p>
                 <div class="flex items-center gap-3 mb-4">
-                    <img src="https://api.dicebear.com/7.x/avataaars/svg?seed={{ques.u_id.username}}" class="w-10 h-10 rounded-xl bg-brand-100">
+                    <a href="{% url 'user_profile' ques.u_id.id %}">
+                    <img src="{% if ques.u_id.profile.profile_picture %} {{ques.u_id.profile.profile_picture.url}} {%else%} https://api.dicebear.com/7.x/avataaars/svg?seed={{ques.u_id.username}}{%endif%}" class="w-10 h-10 rounded-xl bg-brand-100">
+                    </a>
                     <div>
                         <p class="text-sm font-black text-slate-900 dark:text-white">{{ques.u_id.first_name|default:ques.u_id.username}}</p>
                         <p class="text-[10px] text-slate-500 font-bold">@{{ques.u_id.username}}</p>
                     </div>
                 </div>
-                <button class="w-full py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">Follow Author</button>
+                <a href="{% url 'user_profile' ques.u_id.id %}" class="w-full inline-block text-center py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">View Profile</a>
             </div>
         </div>
 
@@ -362,6 +324,17 @@
                 if (input) input.focus();
             }
         }
+    }
+
+    function copyPollLink(btn) {
+        navigator.clipboard.writeText(window.location.href);
+        const originalIcon = btn.innerHTML;
+        btn.innerHTML = '<i data-lucide="check" class="w-4 h-4 mx-auto text-emerald-300"></i>';
+        lucide.createIcons();
+        setTimeout(() => {
+            btn.innerHTML = originalIcon;
+            lucide.createIcons();
+        }, 2000);
     }
 </script>
 {% endblock %}
