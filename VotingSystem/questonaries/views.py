@@ -7,6 +7,26 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from datetime import timedelta
+from collections import Counter
+
+
+def trending_hashtags():
+    ques = Question.objects.all()
+
+    tags_list=[]
+
+    for q in ques:
+        if q.hashtags:
+            tags = q.hashtags.split()
+            for tag in tags:
+                tags_list.append(tag.strip().lower())
+    
+    tag_count = Counter(tags_list)
+
+    tag = tag_count.most_common(3)
+    
+    return tag
+
 
 
 # Create your views here.
@@ -80,6 +100,7 @@ def create_question(req):
 
 
 
+
 def feed_view(req):
     # print(req.user)
     hashtag = req.GET.get('hashtag')
@@ -93,6 +114,9 @@ def feed_view(req):
 
     if hashtag:
         feeds =feeds.filter(hashtags__icontains=hashtag)
+    
+    trend_tags = trending_hashtags()
+    print(trend_tags)
 
 
 
@@ -111,7 +135,10 @@ def feed_view(req):
         # print(feed_array)
 
 
-    context= {'feeds':feed_array}
+    context= {
+        'feeds':feed_array,
+        'trending_tags':trend_tags
+        }
     return render(req,"questionaries/Feed.html", context)
 
 
@@ -204,3 +231,7 @@ def voting_pole(req, id):
     }
 
     return render(req, "questionaries/voting-pole.html", context)
+
+
+
+

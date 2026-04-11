@@ -215,20 +215,15 @@
             <div class="glass-card rounded-[2.5rem] p-8">
                 <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mb-6">Trending Pulse</h3>
                 <div class="space-y-5">
-                    <div class="group cursor-pointer flex justify-between items-center">
+                    {% for tag, count in trending_tags %}
+                    <a href="{% url 'feeds' %}?hashtag={{ tag|cut:'#' }}" class="group cursor-pointer flex justify-between items-center">
                         <div>
-                            <p class="text-xs font-black text-slate-900 dark:text-white group-hover:text-brand-600 transition-colors">#AIRevolution</p>
-                            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">1,240 active polls</p>
+                            <p class="text-xs font-black text-slate-900 dark:text-white group-hover:text-brand-600 transition-colors">{{tag}}</p>
+                            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">{{count}} active polls</p>
                         </div>
                         <i data-lucide="trending-up" class="w-4 h-4 text-green-500"></i>
-                    </div>
-                    <div class="group cursor-pointer flex justify-between items-center">
-                        <div>
-                            <p class="text-xs font-black text-slate-900 dark:text-white group-hover:text-brand-600 transition-colors">#SpaceX</p>
-                            <p class="text-[9px] text-slate-500 font-bold uppercase tracking-tighter">850 active polls</p>
-                        </div>
-                        <i data-lucide="trending-up" class="w-4 h-4 text-green-500"></i>
-                    </div>
+                    </a>
+                    {% endfor %}
                 </div>
             </div>
 
