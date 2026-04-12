@@ -1,7 +1,10 @@
 {% extends "home/layout.html" %}
 {% block title %} VoteSphere | Home {% endblock %}
 
+
 {% block content %}
+{% load static %}
+
 <!-- NAVBAR -->
 <nav class="sticky top-4 z-50 mx-4 sm:mx-8 mt-4 rounded-2xl border border-white/20 dark:border-slate-800/50 bg-white/70 dark:bg-slate-900/70 backdrop-blur-md shadow-lg transition-all">
     <div class="max-w-7xl mx-auto px-6">
@@ -98,7 +101,7 @@
                             <img src="{{ q.img.url }}" alt="image"
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         {% else %}
-                            <img src="https://media.licdn.com/dms/image/v2/D5612AQEv0nwfdkIHcA/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1706888659196?e=2147483647&v=beta&t=VZX-OforirIR9VH2tJtzdASoTvKU79vsZP36d69xHzE"
+                            <img src="{% static 'home/img/home-default-card.jpg' %}"
                                  alt="default"
                                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
                         {% endif %}
