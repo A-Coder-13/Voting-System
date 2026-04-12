@@ -138,3 +138,5 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'expcinstructorhmy@gmail.com'
 
 EMAIL_HOST_PASSWORD = 'itpa lpvn zmce tdar'
+
+LOGIN_URL = 'login'
