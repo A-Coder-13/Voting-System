@@ -76,76 +76,96 @@
     <!-- TRENDING GRID -->
     <section id="trending" class="py-16">
         <div class="max-w-7xl mx-auto px-6">
+    
             <div class="flex justify-between items-end mb-12">
                 <div>
                     <h2 class="text-2xl font-black mb-2 tracking-tight">Trending Today</h2>
                     <p class="text-sm text-slate-500">Real-time pulses from around the globe.</p>
                 </div>
             </div>
-
+    
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Card Component -->
-                <div class="flex flex-col rounded-3xl border border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden group hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300">
-                    <div class="h-40 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800" alt="Tech" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                        <span class="absolute top-3 left-3 bg-white/20 backdrop-blur-md border border-white/30 px-2 py-0.5 rounded-md text-[10px] font-bold text-white uppercase tracking-wider">Technology</span>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-lg font-bold mb-3 line-clamp-1">AI in 2024: Helper or Threat?</h3>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="flex -space-x-2">
-                                <img src="https://i.pravatar.cc/100?u=1" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900" alt="">
-                                <img src="https://i.pravatar.cc/100?u=2" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900" alt="">
-                                <div class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 bg-brand-600 flex items-center justify-center text-[8px] text-white font-bold">+85</div>
-                            </div>
-                            <span class="text-xs font-medium text-slate-400">2.4k votes</span>
-                        </div>
-                        <button class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold hover:opacity-90 transition active:scale-[0.98]">Vote Now</button>
-                    </div>
-                </div>
+    
+                {% for q in questions %}
 
-                <!-- Card 2 -->
                 <div class="flex flex-col rounded-3xl border border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden group hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300">
+                    <a href="{% url 'voting_pole' q.id %}">
+    
+                    <!-- IMAGE -->
                     <div class="h-40 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?auto=format&fit=crop&q=80&w=800" alt="Work" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+    
+                        {% if q.img %}
+                            <img src="{{ q.img.url }}" alt="image"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        {% else %}
+                            <img src="https://media.licdn.com/dms/image/v2/D5612AQEv0nwfdkIHcA/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1706888659196?e=2147483647&v=beta&t=VZX-OforirIR9VH2tJtzdASoTvKU79vsZP36d69xHzE"
+                                 alt="default"
+                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                        {% endif %}
+    
                         <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                        <span class="absolute top-3 left-3 bg-white/20 backdrop-blur-md border border-white/30 px-2 py-0.5 rounded-md text-[10px] font-bold text-white uppercase tracking-wider">Career</span>
+    
+                        <!-- CATEGORY -->
+                        <span class="absolute top-3 left-3 bg-white/20 backdrop-blur-md border border-white/30 px-2 py-0.5 rounded-md text-[10px] font-bold text-white uppercase tracking-wider">
+                            {{ q.category.category|default:"General" }}
+                        </span>
+    
                     </div>
+    
+                    <!-- CONTENT -->
                     <div class="p-6">
-                        <h3 class="text-lg font-bold mb-3 line-clamp-1">Remote Work vs. Hybrid Model</h3>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="flex -space-x-2">
-                                <img src="https://i.pravatar.cc/100?u=3" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900" alt="">
-                                <img src="https://i.pravatar.cc/100?u=4" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900" alt="">
-                                <div class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 bg-indigo-500 flex items-center justify-center text-[8px] text-white font-bold">+1k</div>
-                            </div>
-                            <span class="text-xs font-medium text-slate-400">12k votes</span>
-                        </div>
-                        <button class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold hover:opacity-90 transition active:scale-[0.98]">Vote Now</button>
-                    </div>
-                </div>
+    
+                        <!-- QUESTION -->
+                        <h3 class="text-lg font-bold mb-3 line-clamp-1">
+                            {{ q.ques }}
+                        </h3>
+    
+                        <!-- VOTES + USERS -->
+                        <div class="flex -space-x-2">
 
-                <!-- Card 3 -->
-                <div class="flex flex-col rounded-3xl border border-slate-200/60 dark:border-slate-800/60 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm overflow-hidden group hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-300">
-                    <div class="h-40 overflow-hidden relative">
-                        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?auto=format&fit=crop&q=80&w=800" alt="Gaming" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
-                        <span class="absolute top-3 left-3 bg-white/20 backdrop-blur-md border border-white/30 px-2 py-0.5 rounded-md text-[10px] font-bold text-white uppercase tracking-wider">Gaming</span>
-                    </div>
-                    <div class="p-6">
-                        <h3 class="text-lg font-bold mb-3 line-clamp-1">Best Open World Game?</h3>
-                        <div class="flex items-center gap-3 mb-5">
-                            <div class="flex -space-x-2">
-                                <img src="https://i.pravatar.cc/100?u=5" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900" alt="">
-                                <img src="https://i.pravatar.cc/100?u=6" class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900" alt="">
-                                <div class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 bg-purple-500 flex items-center justify-center text-[8px] text-white font-bold">+240</div>
+                            {% for opt in q.options_set.all %}
+                                {% for v in opt.vote_click_set.all %}
+                                    
+                                    <img src="{% if v.user_id.profile.profile_picture %}{{ v.user_id.profile.profile_picture.url }}{% else %}https://i.pravatar.cc/100?u={{ v.user_id.id }}{% endif %}"
+                                         class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900">
+                        
+                                {% endfor %}
+                            {% endfor %}
+                        
+                            <div class="w-7 h-7 rounded-full border-2 border-white dark:border-slate-900 bg-indigo-500 flex items-center justify-center text-[8px] text-white font-bold">
+                                +{{ q.options_set.all|length }}
                             </div>
-                            <span class="text-xs font-medium text-slate-400">5.8k votes</span>
+                        
                         </div>
-                        <button class="w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold hover:opacity-90 transition active:scale-[0.98]">Vote Now</button>
+    
+                        <!-- HASHTAGS (NEW ADDITION) -->
+                        {% if q.hashtags %}
+                        <div class="flex flex-wrap gap-1 mb-4">
+                            {% for tag in q.hashtags.split %}
+                                <span class="text-[10px] px-2 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+                                    {{ tag }}
+                                </span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+    
+                        <!-- VOTE BUTTON -->
+                        <a href="{% url 'voting_pole' q.id %}"
+                           class="block text-center w-full py-2.5 rounded-xl bg-slate-900 dark:bg-slate-100 text-white dark:text-slate-900 text-xs font-bold hover:opacity-90 transition active:scale-[0.98]">
+                           Vote Now
+                        </a>
+    
                     </div>
+    
+                </a>
                 </div>
+    
+                {% empty %}
+                    <div class="col-span-3 text-center text-slate-500 py-10">
+                        No trending questions found right now.
+                    </div>
+                {% endfor %}
+    
             </div>
         </div>
     </section>

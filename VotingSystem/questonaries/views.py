@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from .models import Category, Question, options,Vote_Click
 from Comments_Likes.models import *
 from users.models import *
+from django.db.models import Count,Q
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
@@ -27,6 +28,42 @@ def trending_hashtags():
     
     return tag
 
+
+def tranding_ques(req):
+    user= req.user
+    feeds = Question.objects.all()
+
+    recent_time=timezone.now()-timedelta(days=1)
+
+    if user.is_authenticated:
+        feeds  = Question.objects.exclude(u_id=user.id)
+
+    feeds=feeds.annotate(
+        recent_votes=Count('options__vote_click', filter=Q(options__vote_click__created_at__gte=recent_time)),
+        recent_likes=Count('postlikes', filter=Q(postlikes__created_at__gte=recent_time))
+        ).order_by('-recent_votes','-recent_likes')
+
+    return feeds
+
+
+def popular(req):
+    user=req.user
+
+    feeds =Question.objects.all()
+
+    if user.is_authenticated:
+        feeds = Question.objects.exclude(u_id=user.id)
+
+    feeds= feeds.annotate(
+        score = (
+            Count('options__vote_click', distinct=True) * 3 +
+            Count('postlikes', distinct=True) * 2 +
+            Count('comments', distinct=True) * 2 +
+            Count('comments__commentsreply', distinct=True)
+        )
+    ).order_by('-score')
+
+    return feeds
 
 
 # Create your views here.
@@ -104,7 +141,12 @@ def create_question(req):
 def feed_view(req):
     # print(req.user)
     hashtag = req.GET.get('hashtag')
+    trend_q= req.GET.get('trend_q')
+    search = req.GET.get('search')
+    sort = req.GET.get('sort')
     feeds = None
+    print("search" , search)
+
 
     if req.user.is_authenticated:
         feeds = Question.objects.exclude(u_id = req.user,expiry__gt=timezone.now())
@@ -112,12 +154,30 @@ def feed_view(req):
         feeds=Question.objects.all()
 
 
+    if trend_q=="1":
+        feeds= tranding_ques(req)
+        print(feeds)
+        
+
+    if search:
+        feeds = feeds.filter(
+            Q(ques__icontains=search) |
+            Q(q_desc__icontains=search) |
+            Q(hashtags__icontains=search) 
+        )
+
+
+    if sort=='popular':
+        feeds = popular(req)
+
+    else:
+        feeds = feeds.order_by('-created_at')
+        
+
     if hashtag:
         feeds =feeds.filter(hashtags__icontains=hashtag)
     
     trend_tags = trending_hashtags()
-    print(trend_tags)
-
 
 
     feed_array=[]
