@@ -64,3 +64,13 @@ def comments_likes(req,id):
     return redirect('voting_pole',comment.q_id.id)
 
 
+
+
+def folow(req,id):
+    user_folow =  User.objects.get(id=id)
+    isFolowed = Folowers.objects.get(user_folow=user_folow,folower=req.user)
+
+    if isFolowed:
+        isFolowed.delete
+    else:
+        Folowers.objects.create(user_folow=user_folow,folower=req.user)

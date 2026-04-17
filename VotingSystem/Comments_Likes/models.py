@@ -30,3 +30,9 @@ class CommentsReply(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+
+
+class Folowers(models.Model):
+    user_folow = models.ForeignKey(User,on_delete=models.CASCADE,related_name="uer_folow") 
+    folower = models.ForeignKey(User,on_delete=models.CASCADE) 
+    created_At =models.DateTimeField(auto_now_add=True)

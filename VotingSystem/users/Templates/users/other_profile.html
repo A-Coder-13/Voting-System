@@ -96,9 +96,9 @@
                     </div>
 
                     <div class="flex items-center justify-center md:justify-start gap-3">
-                        <button class="px-8 py-3.5 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-indigo-500/20 hover:bg-indigo-600 transition-all flex items-center gap-2">
+                        <a href="{% url 'folow' profile.user_id %}" class="px-8 py-3.5 bg-primary text-white font-bold rounded-2xl shadow-xl shadow-indigo-500/20 hover:bg-indigo-600 transition-all flex items-center gap-2">
                             <i data-lucide="user-plus" class="w-4 h-4"></i> Follow
-                        </button>
+                        </a>
                         <button class="p-3.5 glass rounded-2xl hover:bg-white dark:hover:bg-slate-800 transition-colors">
                             <i data-lucide="share-2" class="w-5 h-5"></i>
                         </button>

@@ -25,6 +25,7 @@ def trending_hashtags():
     tag_count = Counter(tags_list)
 
     tag = tag_count.most_common(3)
+    print(tag)
     
     return tag
 
@@ -117,7 +118,6 @@ def create_question(req):
                 opt_dsc=""
         # print(desc_list)
         
-
 
 
         # Create Options
