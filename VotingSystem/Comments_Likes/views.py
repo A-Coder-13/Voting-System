@@ -68,9 +68,11 @@ def comments_likes(req,id):
 
 def folow(req,id):
     user_folow =  User.objects.get(id=id)
-    isFolowed = Folowers.objects.get(user_folow=user_folow,folower=req.user)
+    isFolowed = Folowers.objects.filter(user_folow=user_folow,folower=req.user).first()
 
     if isFolowed:
         isFolowed.delete
     else:
         Folowers.objects.create(user_folow=user_folow,folower=req.user)
+
+    return redirect('user_profile',user_folow.id)

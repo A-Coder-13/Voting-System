@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from .models import *
 from questonaries.models import *
+from Comments_Likes.models import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.core.mail import send_mail
@@ -221,12 +222,22 @@ def other_profile_view(req,id):
     vote_cast = 0
     for q in active_pole:
         vote_cast += Vote_Click.objects.filter(opt_id__q_id=q.id).count()
+    
+    isFolowed = Folowers.objects.filter(user_folow=profile.user_id,folower=req.user).first()
+    if isFolowed:
+        isFolowed=True
+        print(True)
+    else:
+        isFolowed=False
+        print(False)
+
 
     context = {
         'profile': profile,
         'pole': t_pole,
         'votes': vote_cast,
         'active_poles':active_pole,
+        'isFolowed':isFolowed,
     }
 
     return render(req, "users/other_profile.html", context)
