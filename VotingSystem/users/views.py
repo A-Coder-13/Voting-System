@@ -195,6 +195,7 @@ def profile_view(req):
 
     context = {
         'profile': profile,
+        'active_pole': active_pole,
         'pole': t_pole,
         'votes': vote_cast
     }

@@ -154,49 +154,34 @@
                     </div>
 
                     <div id="content-polls" class="tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {% for pole in active_pole %}
+                        <a href="">
                         <div class="group flex flex-col bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
                             <div class="relative h-48 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                {%if pole.img %}
+                                <img src="pole.img.url" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                {%else%}
+                                <img src="{% static 'home/img/home-default-card.png' %}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                {% endif %}
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                                 <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-[10px] font-bold rounded-full uppercase tracking-widest">Active</span>
                             </div>
                             <div class="p-6 flex-1 flex flex-col">
-                                <h4 class="font-bold text-slate-900 dark:text-white mb-2 leading-tight">Next-Gen Gaming: Hardware vs Cloud?</h4>
-                                <p class="text-xs text-slate-500 mb-6 flex-1">Is hardware ownership dying in the age of streaming services like GeForce Now?</p>
+                                <h4 class="font-bold text-slate-900 dark:text-white mb-2 leading-tight">{{pole.ques}}</h4>
+                                <p class="text-xs text-slate-500 mb-6 flex-1">{{pole.q_desc}}</p>
                                 <div class="space-y-3">
+                                    {% for opt in pole.options.all %}
                                     <div class="relative h-10 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
                                         <div class="absolute inset-y-0 left-0 bg-primary/20 w-[64%]"></div>
-                                        <div class="absolute inset-0 flex justify-between items-center px-4 text-[10px] font-black uppercase"><span>Hardware</span><span>64%</span></div>
+                                        <div class="absolute inset-0 flex justify-between items-center px-4 text-[10px] font-black uppercase"><span>opt.option</span><span>64%</span></div>
                                     </div>
-                                    <div class="relative h-10 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                                        <div class="absolute inset-y-0 left-0 bg-primary/20 w-[36%]"></div>
-                                        <div class="absolute inset-0 flex justify-between items-center px-4 text-[10px] font-black uppercase"><span>Cloud</span><span>36%</span></div>
-                                    </div>
+                                    {%endfor%}
                                 </div>
                             </div>
                         </div>
+                        </a>
+                        {% endfor %}
 
-                        <div class="group flex flex-col bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
-                            <div class="relative h-48 overflow-hidden">
-                                <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=600" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-[10px] font-bold rounded-full uppercase tracking-widest">Active</span>
-                            </div>
-                            <div class="p-6 flex-1 flex flex-col">
-                                <h4 class="font-bold text-slate-900 dark:text-white mb-2 leading-tight">Dark Mode vs Light Mode?</h4>
-                                <p class="text-xs text-slate-500 mb-6 flex-1">The ultimate debate for UI designers everywhere.</p>
-                                <div class="space-y-3">
-                                    <div class="relative h-10 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                                        <div class="absolute inset-y-0 left-0 bg-primary/20 w-[82%]"></div>
-                                        <div class="absolute inset-0 flex justify-between items-center px-4 text-[10px] font-black uppercase"><span>Dark Mode</span><span>82%</span></div>
-                                    </div>
-                                    <div class="relative h-10 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                                        <div class="absolute inset-y-0 left-0 bg-primary/20 w-[18%]"></div>
-                                        <div class="absolute inset-0 flex justify-between items-center px-4 text-[10px] font-black uppercase"><span>Light Mode</span><span>18%</span></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div id="content-archive" class="tab-content hidden flex-1 flex flex-col items-center justify-center py-12">
