@@ -139,68 +139,99 @@ def create_question(req):
 
 
 def feed_view(req):
-    # print(req.user)
     hashtag = req.GET.get('hashtag')
-    trend_q= req.GET.get('trend_q')
+    trend_q = req.GET.get('trend_q')
     search = req.GET.get('search')
     sort = req.GET.get('sort')
-    feeds = None
-    print("search" , search)
 
+    user = req.user
 
-    if req.user.is_authenticated:
-        feeds = Question.objects.exclude(u_id = req.user,expiry__gt=timezone.now())
+    #  Base queryset
+    if user.is_authenticated:
+        feeds = Question.objects.exclude(u_id=user)
     else:
-        feeds=Question.objects.all()
+        feeds = Question.objects.all()
 
+    # TRENDING LOGIC (last 24 hours)
+    if trend_q == "1":
+        recent_time = timezone.now() - timedelta(days=1)
 
-    if trend_q=="1":
-        feeds= tranding_ques(req)
-        print(feeds)
-        
+        feeds = feeds.annotate(
+            recent_votes=Count(
+                'options__vote_click',
+                filter=Q(options__vote_click__created_at__gte=recent_time)
+            ),
+            recent_likes=Count(
+                'postlikes',
+                filter=Q(postlikes__created_at__gte=recent_time)
+            )
+        ).order_by('-recent_votes', '-recent_likes')
 
+    #  SEARCH
     if search:
         feeds = feeds.filter(
             Q(ques__icontains=search) |
             Q(q_desc__icontains=search) |
-            Q(hashtags__icontains=search) 
+            Q(hashtags__icontains=search)
         )
 
-
-    if sort=='popular':
-        feeds = popular(req)
-
-    else:
-        feeds = feeds.order_by('-created_at')
-        
-
+    #  HASHTAG FILTER
     if hashtag:
-        feeds =feeds.filter(hashtags__icontains=hashtag)
-    
-    trend_tags = trending_hashtags()
+        feeds = feeds.filter(hashtags__icontains=hashtag.lower())
 
+    #  POPULAR SORT
+    if sort == 'popular':
+        feeds = feeds.annotate(
+            score=(
+                Count('options__vote_click', distinct=True) * 3 +
+                Count('postlikes', distinct=True) * 2 +
+                Count('comments', distinct=True) * 2 +
+                Count('comments__commentsreply', distinct=True)
+            )
+        ).order_by('-score')
 
-    feed_array=[]
-    for f in feeds: 
-        total = Vote_Click.objects.filter(opt_id__q_id=f).count()
+    #  DEFAULT SORT
+    elif trend_q != "1":
+        feeds = feeds.order_by('-created_at')
+
+    # 🔥 TRENDING HASHTAGS
+    ques_with_tags = Question.objects.exclude(hashtags__isnull=True).exclude(hashtags="")
+
+    tags_list = []
+    for q in ques_with_tags:
+        tags = q.hashtags.split()
+        for tag in tags:
+            tags_list.append(tag.strip().lower())
+
+    trending_tags = Counter(tags_list).most_common(5)
+
+    #  FINAL DATA BUILD
+    feed_array = []
+
+    for f in feeds:
+        total_votes = Vote_Click.objects.filter(opt_id__q_id=f).count()
         likes = PostLikes.objects.filter(q_id=f.id).count()
-        user_liked = PostLikes.objects.filter(q_id=f.id,user_id=req.user.id).exists()
+
+        user_liked = False
+        if user.is_authenticated:
+            user_liked = PostLikes.objects.filter(
+                q_id=f.id,
+                user_id=user.id
+            ).exists()
+
         feed_array.append({
-            'ques_vote_count':total,
-            'ques_data':f,
+            'ques_data': f,
+            'ques_vote_count': total_votes,
             'likes': likes,
-            'user_liked':user_liked
+            'user_liked': user_liked
         })
 
-        # print(feed_array)
+    context = {
+        'feeds': feed_array,
+        'trending_tags': trending_tags
+    }
 
-
-    context= {
-        'feeds':feed_array,
-        'trending_tags':trend_tags
-        }
-    return render(req,"questionaries/Feed.html", context)
-
+    return render(req, "questionaries/Feed.html", context)
 
 
 
