@@ -11,60 +11,6 @@ from datetime import timedelta
 from collections import Counter
 
 
-def trending_hashtags():
-    ques = Question.objects.all()
-
-    tags_list=[]
-
-    for q in ques:
-        if q.hashtags:
-            tags = q.hashtags.split()
-            for tag in tags:
-                tags_list.append(tag.strip().lower())
-    
-    tag_count = Counter(tags_list)
-
-    tag = tag_count.most_common(3)
-    print(tag)
-    
-    return tag
-
-
-def tranding_ques(req):
-    user= req.user
-    feeds = Question.objects.all()
-
-    recent_time=timezone.now()-timedelta(days=1)
-
-    if user.is_authenticated:
-        feeds  = Question.objects.exclude(u_id=user.id)
-
-    feeds=feeds.annotate(
-        recent_votes=Count('options__vote_click', filter=Q(options__vote_click__created_at__gte=recent_time)),
-        recent_likes=Count('postlikes', filter=Q(postlikes__created_at__gte=recent_time))
-        ).order_by('-recent_votes','-recent_likes')
-
-    return feeds
-
-
-def popular(req):
-    user=req.user
-
-    feeds =Question.objects.all()
-
-    if user.is_authenticated:
-        feeds = Question.objects.exclude(u_id=user.id)
-
-    feeds= feeds.annotate(
-        score = (
-            Count('options__vote_click', distinct=True) * 3 +
-            Count('postlikes', distinct=True) * 2 +
-            Count('comments', distinct=True) * 2 +
-            Count('comments__commentsreply', distinct=True)
-        )
-    ).order_by('-score')
-
-    return feeds
 
 
 # Create your views here.

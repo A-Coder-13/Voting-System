@@ -7,10 +7,10 @@ def home(req):
     user = req.user
     now = timezone.now()
 
-    # 🔍 Search
+    #  Search
     search = req.GET.get('search')
 
-    # 🟢 Active questions (not expired)
+    #  Active questions (not expired)
     questions = Question.objects.filter(expiry__gt=now)
 
     if search:
@@ -19,10 +19,10 @@ def home(req):
             Q(hashtags__icontains=search)
         )
 
-    # 📊 Add vote count (assuming related_name='votes')
-    questions = questions.annotate(total_votes=Count('options__vote_click')).order_by('-id')
+    #  Add vote count (assuming related_name='votes')
+    questions = questions.annotate(total_votes=Count('options__vote_click')).order_by('-id')[:3]
 
-    # 🔥 Trending hashtags logic
+    #  Trending hashtags logic
     hashtag_dict = {}
     
     for q in Question.objects.all():
