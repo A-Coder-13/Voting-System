@@ -182,11 +182,62 @@ def profile_view(req):
     except UserProfile.DoesNotExist:
         profile = None
 
+
     now = timezone.now()
+    active_pole = Question.objects.filter(u_id=req.user, expiry__gt=now)
+    vote = Vote_Click.objects.filter(user_id=req.user)
+    comm = Comments.objects.filter(user_id=req.user)
+    like = PostLikes.objects.filter(user_id=req.user)
+    folow = Folowers.objects.filter(folower=req.user)
+    folowers=Folowers.objects.filter(user_folow=req.user).count()
+    folowings=folow.count()
+    print("folow: ", folowers)
+    print("folowing: ", folowings)
+
 
     # Active polls (expiry future me)
-    active_pole = Question.objects.filter(u_id=req.user, expiry__gt=now)
     t_pole = active_pole.count()
+
+
+    # Activities
+    latest_activities = list(active_pole) + list(vote) + list(comm) + list(like) + list(folow) 
+    for obj in latest_activities:
+        if isinstance(obj, Question):
+            obj.type = "question"
+        elif isinstance(obj, Vote_Click):
+            obj.type = "vote"
+        elif isinstance(obj, Comments):
+            obj.type = "comment"
+        elif isinstance(obj, PostLikes):
+            obj.type = "like"
+        elif isinstance(obj, Folowers):
+            obj.type = "follow"
+    latest_activities.sort(key=lambda x: x.created_at, reverse=True)
+    latest_activities = latest_activities[:20]
+
+
+    # My Poles
+    my_polls=[]
+
+    for q in active_pole:
+        option=options.objects.filter(q_id=q.id)
+        total_vote = Vote_Click.objects.filter(opt_id__q_id=q.id).count()
+        
+
+        option_array=[]
+        for opt in option:
+            t_opt=Vote_Click.objects.filter(opt_id=opt.id).count()
+            opt_pers=(t_opt/total_vote)*100
+            option_array.append({
+                    'opt_data':opt,
+                    'opt_pers':opt_pers
+                })
+        my_polls.append({
+            'ques':q,
+            'options':option_array
+        })
+
+
 
     # Total votes count
     vote_cast = 0
@@ -195,9 +246,12 @@ def profile_view(req):
 
     context = {
         'profile': profile,
-        'active_pole': active_pole,
+        'my_polls': my_polls,
         'pole': t_pole,
-        'votes': vote_cast
+        'votes': vote_cast,
+        'latest_activities':latest_activities,
+        'folowers':folowers,
+        'folowing':folowings
     }
 
     return render(req, "users/profile.html", context)

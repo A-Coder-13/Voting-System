@@ -62,9 +62,9 @@
             <span>VoteSphere</span>
         </a>
         <div class="hidden md:flex items-center gap-8 text-sm font-semibold text-slate-500 dark:text-slate-400">
-            <a href="#" class="hover:text-primary transition-colors">Dashboard</a>
-            <a href="#" class="hover:text-primary transition-colors">Polls</a>
-            <a href="#" class="text-primary relative after:absolute after:bottom-[-21px] after:left-0 after:right-0 after:h-[2px] after:bg-primary">Profile</a>
+            <a href="{% url 'explore' %}" class="hover:text-primary transition-colors">explore</a>
+            <a href="{% url 'feeds' %}" class="hover:text-primary transition-colors">Polls</a>
+            <a href="{% url 'profile' %}" class="text-primary relative after:absolute after:bottom-[-21px] after:left-0 after:right-0 after:h-[2px] after:bg-primary">Profile</a>
         </div>
         <div class="flex items-center gap-2">
             <button id="theme-toggle-desktop" class="p-2.5 rounded-xl glass hover:scale-105 transition-transform">
@@ -107,14 +107,22 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div class="lg:col-span-4 space-y-6">
-                <div class="grid grid-cols-2 lg:grid-cols-1 gap-4">
-                    <div class="glass p-6 rounded-[2rem] border-none">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="glass p-6 rounded-[2rem] border-none text-center">
                         <span class="block text-3xl font-black text-primary">{{pole|default:'12'}}</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 block">Active Polls</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 block">Polls</span>
                     </div>
-                    <div class="glass p-6 rounded-[2rem] border-none">
+                    <div class="glass p-6 rounded-[2rem] border-none text-center">
                         <span class="block text-3xl font-black text-primary">{{votes|default:'284'}}</span>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 block">Votes Cast</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 block">Votes</span>
+                    </div>
+                    <div class="glass p-6 rounded-[2rem] border-none text-center">
+                        <span class="block text-3xl font-black text-primary">{{folowers|default:'0'}}</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 block">Followers</span>
+                    </div>
+                    <div class="glass p-6 rounded-[2rem] border-none text-center">
+                        <span class="block text-3xl font-black text-primary">{{folowing|default:'0'}}</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1 block">Following</span>
                     </div>
                 </div>
 
@@ -131,57 +139,154 @@
             <div class="lg:col-span-8">
                 <div class="glass rounded-[2.5rem] p-4 md:p-6 border-none min-h-[600px] flex flex-col">
                     <div class="flex bg-slate-100/50 dark:bg-slate-900/50 p-1.5 rounded-[1.5rem] mb-8 overflow-x-auto no-scrollbar">
-                        <button onclick="switchTab('activity')" id="tab-activity" class="tab-btn flex-1 py-3 px-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm text-sm font-bold text-primary flex items-center justify-center gap-2 transition-all">
+                        <button onclick="switchTab('activity')" id="tab-activity" class="tab-btn flex-1 py-3 px-6 rounded-2xl bg-white dark:bg-slate-800 shadow-sm text-sm font-bold text-primary flex items-center justify-center gap-2 transition-all shrink-0">
                             <i data-lucide="activity" class="w-4 h-4"></i> Activity
                         </button>
-                        <button onclick="switchTab('polls')" id="tab-polls" class="tab-btn flex-1 py-3 px-6 rounded-2xl text-slate-400 text-sm font-bold flex items-center justify-center gap-2 transition-all">
+                        <button onclick="switchTab('polls')" id="tab-polls" class="tab-btn flex-1 py-3 px-6 rounded-2xl text-slate-400 text-sm font-bold flex items-center justify-center gap-2 transition-all shrink-0">
                             <i data-lucide="layout-list" class="w-4 h-4"></i> My Polls
-                        </button>
-                        <button onclick="switchTab('archive')" id="tab-archive" class="tab-btn flex-1 py-3 px-6 rounded-2xl text-slate-400 text-sm font-bold flex items-center justify-center gap-2 transition-all">
-                            <i data-lucide="archive" class="w-4 h-4"></i> Archive
                         </button>
                     </div>
 
                     <div id="content-activity" class="tab-content space-y-4">
-                        <div class="p-6 rounded-[2rem] bg-white/40 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4">
-                            <div class="w-12 h-12 rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 shrink-0"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
+                        {% for act in latest_activities %}
+                        {% if act.type == 'question' %}
+                        <!-- Pole Creation -->
+                        <div class="p-6 rounded-[2rem] bg-white/40 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4 hover:bg-white/60 transition-colors">
+                            <div class="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-900/30 flex items-center justify-center text-indigo-600 shrink-0"><i data-lucide="plus-square" class="w-6 h-6"></i></div>
                             <div>
-                                <h4 class="font-bold text-slate-900 dark:text-white">Vote Cast: Feature Roadmap</h4>
-                                <p class="text-xs text-slate-500 mt-1 mb-3">Voted for "Mobile First Priority" on Oct 24th.</p>
-                                <div class="flex items-center gap-3"><span class="text-[10px] font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-1 rounded-md uppercase">Governance</span><span class="text-[10px] font-medium text-slate-400">2h ago</span></div>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Poll Created: {{act.ques}}</h4>
+                                <p class="text-xs text-slate-500 mt-1 mb-3">Launched a new poll in <span class="text-indigo-500 font-semibold">{{act.cat_id.category}}</span>.</p>
+                                <div class="flex items-center gap-3"><span class="text-[10px] font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-900/20 px-2 py-1 rounded-md uppercase">Creation</span><span class="text-[10px] font-medium text-slate-400">{{ act.created_at|timesince }} ago</span></div>
                             </div>
                         </div>
+                        
+                        {% elif act.type == 'vote' %}
+                        <!-- Vote Cast -->
+                        <div class="p-6 rounded-[2rem] bg-white/40 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4 hover:bg-white/60 transition-colors">
+                            <div class="w-12 h-12 rounded-2xl bg-green-100 dark:bg-green-900/30 flex items-center justify-center text-green-600 shrink-0"><i data-lucide="check-circle" class="w-6 h-6"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Vote Cast: {{act.opt_id.q_id.ques}}</h4>
+                                <p class="text-xs text-slate-500 mt-1 mb-3">Voted for "{{act.opt_id.option}}".</p>
+                                <div class="flex items-center gap-3"><span class="text-[10px] font-bold text-emerald-500 bg-emerald-50 dark:bg-emerald-900/20 px-2 py-1 rounded-md uppercase">Voting</span><span class="text-[10px] font-medium text-slate-400">{{act.created_at|timesince}} ago</span></div>
+                            </div>
+                        </div>
+
+                        {% elif act.type == 'comment' %}
+                        <!-- Comment -->
+                        <div class="p-6 rounded-[2rem] bg-white/40 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4 hover:bg-white/60 transition-colors">
+                            <div class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 shrink-0"><i data-lucide="message-square" class="w-6 h-6"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Commented on: {{act.q_id.ques}} </h4>
+                                <p class="text-xs text-slate-500 mt-1 mb-3">"{{act.text|truncatechars:60}}"</p>
+                                <div class="flex items-center gap-3"><span class="text-[10px] font-bold text-blue-500 bg-blue-50 dark:bg-blue-900/20 px-2 py-1 rounded-md uppercase">Discussion</span><span class="text-[10px] font-medium text-slate-400">{{act.created_at|timesince}} ago</span></div>
+                            </div>
+                        </div>
+
+                        {% elif act.type == 'like' %}
+                        <!-- Like -->
+                        <div class="p-6 rounded-[2rem] bg-white/40 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4 hover:bg-white/60 transition-colors">
+                            <div class="w-12 h-12 rounded-2xl bg-rose-100 dark:bg-rose-900/30 flex items-center justify-center text-rose-600 shrink-0"><i data-lucide="heart" class="w-6 h-6"></i></div>
+                            <div>
+                                <h4 class="font-bold text-slate-900 dark:text-white">Liked a Poll</h4>
+                                <p class="text-xs text-slate-500 mt-1 mb-3">Like "{{act.q_id.ques}}"</p>
+                                <div class="flex items-center gap-3"><span class="text-[10px] font-bold text-rose-500 bg-rose-50 dark:bg-rose-900/20 px-2 py-1 rounded-md uppercase">Social</span><span class="text-[10px] font-medium text-slate-400">{{act.created_at|timesince}} ago</span></div>
+                            </div>
+                        </div>
+                        {% elif act.type == 'follow' %}
+                        <!-- Follow -->
+                        <div class="p-6 rounded-[2rem] bg-white/40 dark:bg-slate-800/20 border border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row gap-4 hover:bg-white/60 transition-colors group">
+                            <div class="w-12 h-12 rounded-2xl bg-violet-100 dark:bg-violet-900/30 flex items-center justify-center text-violet-600 shrink-0">
+                                <i data-lucide="user-plus" class="w-6 h-6"></i>
+                            </div>
+                            
+                            <div class="flex-1">
+                                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                                    <div>
+                                        <h4 class="font-bold text-slate-900 dark:text-white">Started following {{act.user_folow.first_name}} {{act.user_folow.last_name}}</h4>
+                                        <p class="text-xs text-slate-500 mt-1 mb-3">You are now receiving updates on their latest polls and insights.</p>
+                                    </div>
+                                    
+                                    <div class="flex items-center gap-2 px-3 py-2 bg-slate-50/50 dark:bg-slate-900/50 rounded-xl border border-slate-100 dark:border-slate-800 self-start sm:self-center">
+                                        <img src="{% if act.user_folow.img %}{{act.user_folow.img.url}}{% else %}https://api.dicebear.com/7.x/avataaars/svg?seed={{act.user_folow.username}}{%endif%}" class="w-6 h-6 rounded-lg" alt="User">
+                                        <span class="text-[10px] font-bold text-slate-600 dark:text-slate-400">{{act.user_folow.username}}</span>
+                                    </div>
+                                </div>
+                        
+                                <div class="flex items-center gap-3 mt-1">
+                                    <span class="text-[10px] font-bold text-violet-500 bg-violet-50 dark:bg-violet-900/20 px-2 py-1 rounded-md uppercase">Social</span>
+                                    <span class="text-[10px] font-medium text-slate-400">3h ago</span>
+                                </div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
                     </div>
 
                     <div id="content-polls" class="tab-content hidden grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {% for pole in active_pole %}
-                        <a href="">
+                        {% for pole in my_polls %}
+                        <a href="{% url 'voting_pole' pole.ques.id %}">
                         <div class="group flex flex-col bg-white dark:bg-slate-900 rounded-[2.5rem] border border-slate-100 dark:border-slate-800 overflow-hidden hover:shadow-2xl hover:shadow-indigo-500/10 transition-all duration-500">
                             <div class="relative h-48 overflow-hidden">
-                                {%if pole.img %}
-                                <img src="pole.img.url" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
-                                {%else%}
+                                {% if pole.ques.img %}
+                                <img src="{{pole.ques.img.url}}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                                {% else %}
                                 <img src="{% static 'home/img/home-default-card.png' %}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
                                 {% endif %}
                                 <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-[10px] font-bold rounded-full uppercase tracking-widest">Active</span>
+                                <span class="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-[10px] font-bold rounded-full uppercase tracking-widest">{{pole.ques.cat_id.category|default:"General" }}</span>
                             </div>
                             <div class="p-6 flex-1 flex flex-col">
-                                <h4 class="font-bold text-slate-900 dark:text-white mb-2 leading-tight">{{pole.ques}}</h4>
-                                <p class="text-xs text-slate-500 mb-6 flex-1">{{pole.q_desc}}</p>
+                                <h4 class="font-bold text-slate-900 dark:text-white mb-2 leading-tight">{{pole.ques.ques}}</h4>
+                                <p class="text-xs text-slate-500 mb-6 flex-1">{{pole.ques.q_desc}}</p>
                                 <div class="space-y-3">
-                                    {% for opt in pole.options.all %}
+                                    {% for opt in pole.options %}
                                     <div class="relative h-10 bg-slate-50 dark:bg-slate-800 rounded-xl overflow-hidden border border-slate-100 dark:border-slate-700">
-                                        <div class="absolute inset-y-0 left-0 bg-primary/20 w-[64%]"></div>
-                                        <div class="absolute inset-0 flex justify-between items-center px-4 text-[10px] font-black uppercase"><span>opt.option</span><span>64%</span></div>
+                                        <div class="absolute inset-y-0 left-0 bg-primary/20" style="width: {{opt.opt_pers}}%"></div>
+                                        <div class="absolute inset-0 flex justify-between items-center px-4 text-[10px] font-black uppercase"><span>{{opt.opt_data.option}}</span><span>{{opt.opt_pers|floatformat:1}}%</span></div>
                                     </div>
-                                    {%endfor%}
+                                    {% endfor %}
                                 </div>
                             </div>
                         </div>
                         </a>
                         {% endfor %}
+                    </div>
 
+                    <div id="content-social" class="tab-content hidden space-y-8">
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 px-2">Recent Followers</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="glass p-4 rounded-2xl border-none flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" class="w-10 h-10 rounded-xl bg-slate-200" alt="User">
+                                        <div>
+                                            <p class="text-sm font-bold">Alex Rivera</p>
+                                            <p class="text-[10px] text-slate-500">@arivera_design</p>
+                                        </div>
+                                    </div>
+                                    <button class="px-4 py-2 bg-primary/10 text-primary text-xs font-bold rounded-xl hover:bg-primary hover:text-white transition-all">Follow Back</button>
+                                </div>
+                                <div class="glass p-4 rounded-2xl border-none flex items-center justify-between">
+                                    <div class="flex items-center gap-3">
+                                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan" class="w-10 h-10 rounded-xl bg-slate-200" alt="User">
+                                        <div>
+                                            <p class="text-sm font-bold">Jordan Smith</p>
+                                            <p class="text-[10px] text-slate-500">@jsmith_tech</p>
+                                        </div>
+                                    </div>
+                                    <button class="px-4 py-2 bg-slate-100 dark:bg-slate-800 text-slate-400 text-xs font-bold rounded-xl" disabled>Following</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <h3 class="text-sm font-bold text-slate-400 uppercase tracking-widest mb-4 px-2">People You Follow</h3>
+                            <div class="flex flex-wrap gap-3 px-2">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Mila" class="w-12 h-12 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" title="Mila K.">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Oscar" class="w-12 h-12 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" title="Oscar W.">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Luna" class="w-12 h-12 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" title="Luna E.">
+                                <div class="w-12 h-12 rounded-full bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-xs font-bold text-slate-400 cursor-pointer">+142</div>
+                            </div>
+                        </div>
                     </div>
 
                     <div id="content-archive" class="tab-content hidden flex-1 flex flex-col items-center justify-center py-12">
@@ -197,6 +302,7 @@
     <script>
         lucide.createIcons();
 
+        // Theme Toggle Logic
         function applyTheme(isDark) {
             document.documentElement.classList.toggle('dark', isDark);
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
@@ -211,18 +317,30 @@
             applyTheme(isDarkMode);
         });
 
+        // Tab Switching Logic
         function switchTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
-            document.getElementById('content-' + tabId).classList.remove('hidden');
-            if(tabId === 'polls') document.getElementById('content-' + tabId).classList.add('grid');
+            // Hide all contents
+            document.querySelectorAll('.tab-content').forEach(c => {
+                c.classList.add('hidden');
+                c.classList.remove('grid');
+            });
+            
+            // Show active content
+            const activeContent = document.getElementById('content-' + tabId);
+            activeContent.classList.remove('hidden');
+            if(tabId === 'polls') activeContent.classList.add('grid');
 
+            // Update Tab Button Styles
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('bg-white', 'dark:bg-slate-800', 'text-primary', 'shadow-sm');
                 btn.classList.add('text-slate-400');
             });
+            
             const activeBtn = document.getElementById('tab-' + tabId);
             activeBtn.classList.add('bg-white', 'dark:bg-slate-800', 'text-primary', 'shadow-sm');
             activeBtn.classList.remove('text-slate-400');
+            
+            // Re-render icons for dynamic content
             lucide.createIcons();
         }
     </script>
