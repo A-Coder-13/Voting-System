@@ -191,8 +191,7 @@ def profile_view(req):
     folow = Folowers.objects.filter(folower=req.user)
     folowers=Folowers.objects.filter(user_folow=req.user).count()
     folowings=folow.count()
-    print("folow: ", folowers)
-    print("folowing: ", folowings)
+    
 
 
     # Active polls (expiry future me)
@@ -227,7 +226,9 @@ def profile_view(req):
         option_array=[]
         for opt in option:
             t_opt=Vote_Click.objects.filter(opt_id=opt.id).count()
-            opt_pers=(t_opt/total_vote)*100
+            opt_pers = (t_opt / total_vote * 100) if total_vote > 0 else 0
+            print("tvote: ", total_vote)
+            print("topt: ", t_opt)
             option_array.append({
                     'opt_data':opt,
                     'opt_pers':opt_pers

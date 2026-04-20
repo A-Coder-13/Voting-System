@@ -256,6 +256,9 @@ def voting_pole(req, id):
         })
     
 
+    isFollowing = Folowers.objects.filter(user_folow=ques.u_id.id,folower=req.user).exists()
+    print(isFollowing)
+
 
     context = {
         'ques': ques,
@@ -265,6 +268,7 @@ def voting_pole(req, id):
         'user_choice_id': user_vote.opt_id.id if user_vote else None,
         'remaining_time':remaining_time,
         'comments':comments,
+        'isFollowing':isFollowing,
     }
 
     return render(req, "questionaries/voting-pole.html", context)

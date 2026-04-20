@@ -71,7 +71,7 @@ def folow(req,id):
     isFolowed = Folowers.objects.filter(user_folow=user_folow,folower=req.user).first()
 
     if isFolowed:
-        isFolowed.delete
+        isFolowed.delete()
     else:
         Folowers.objects.create(user_folow=user_folow,folower=req.user)
 

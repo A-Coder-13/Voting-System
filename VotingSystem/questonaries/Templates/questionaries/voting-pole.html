@@ -281,16 +281,18 @@
 
             <div class="mt-8 pt-8 border-t border-slate-100 dark:border-slate-800">
                 <p class="text-[10px] font-bold text-slate-400 mb-4">Posted By</p>
+                <a href="{% url 'user_profile' ques.u_id.id %}">
                 <div class="flex items-center gap-3 mb-4">
-                    <a href="{% url 'user_profile' ques.u_id.id %}">
                     <img src="{% if ques.u_id.profile.profile_picture %} {{ques.u_id.profile.profile_picture.url}} {%else%} https://api.dicebear.com/7.x/avataaars/svg?seed={{ques.u_id.username}}{%endif%}" class="w-10 h-10 rounded-xl bg-brand-100">
-                    </a>
                     <div>
                         <p class="text-sm font-black text-slate-900 dark:text-white">{{ques.u_id.first_name|default:ques.u_id.username}}</p>
                         <p class="text-[10px] text-slate-500 font-bold">@{{ques.u_id.username}}</p>
                     </div>
                 </div>
-                <a href="{% url 'user_profile' ques.u_id.id %}" class="w-full inline-block text-center py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">View Profile</a>
+                </a>
+                <a href="{% url 'folow' ques.u_id.id %}" class="{% if not isFollowing %} bg-brand-600 shadow-sm shadow-brand-600/20 {%endif%} w-full inline-block text-center py-2 border border-slate-200 dark:border-slate-800 rounded-xl text-xs font-bold hover:bg-slate-50 dark:hover:bg-slate-800 transition-all">
+                    {%if isFollowing %}Following Author{% else %}Follow Author{%endif%}
+                </a>
             </div>
         </div>
 
