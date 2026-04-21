@@ -1,191 +1,211 @@
 {% extends "home/layout.html" %}
-{% block title %} VoteSphere | Explore {% endblock %}
+{% block title %} VoteSphere | Explore Discovery Hub {% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-slate-50/50 dark:bg-slate-950 transition-colors duration-500">
+<div class="min-h-screen bg-[#fcfcfd] dark:bg-[#030712] transition-colors duration-500 pt-28 pb-20 px-4 md:px-8 lg:px-12">
     
-    <header class="pt-28 pb-16 px-6">
-        <div class="max-w-7xl mx-auto text-center">
-            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-black uppercase tracking-widest mb-6">
-                <i data-lucide="sparkles" class="w-3 h-3"></i> Discover New Perspectives
-            </div>
-            <h1 class="text-4xl md:text-6xl font-black tracking-tight mb-8">
-                Explore the <span class="bg-gradient-to-r from-brand-600 to-violet-500 bg-clip-text text-transparent">Sphere</span>
-            </h1>
-            
-            <div class="max-w-3xl mx-auto relative group">
-                <div class="absolute inset-y-0 left-5 flex items-center pointer-events-none">
-                    <i data-lucide="search" class="w-5 h-5 text-slate-400 group-focus-within:text-brand-600 transition-colors"></i>
+    <main class="max-w-[1440px] mx-auto">
+        
+        <header class="flex flex-col lg:flex-row lg:items-end justify-between mb-12 gap-8">
+            <div class="max-w-2xl">
+                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-500/10 text-brand-600 dark:text-brand-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">
+                    <span class="relative flex h-2 w-2">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-400 opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-2 w-2 bg-brand-500"></span>
+                    </span>
+                    Live Discovery Engine
                 </div>
-                <input type="text" placeholder="Search polls, categories, or creators..." 
-                    class="w-full pl-14 pr-6 py-5 rounded-3xl border border-white dark:border-slate-800 bg-white/80 dark:bg-slate-900/80 backdrop-blur-2xl focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 outline-none transition-all shadow-xl shadow-slate-200/50 dark:shadow-none">
+                <h1 class="text-5xl md:text-6xl font-black tracking-tight dark:text-white leading-[0.9]">
+                    Explore the <span class="text-brand-600 italic">Sphere</span>
+                </h1>
+                <p class="mt-4 text-slate-500 dark:text-slate-400 font-medium text-lg">
+                    The world's first decentralized debate hub. Find your tribe, cast your vote.
+                </p>
             </div>
-        </div>
-    </header>
-
-    <main class="max-w-7xl mx-auto px-6 pb-24">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
-            <aside class="lg:col-span-3 space-y-10">
-                <section>
-                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-6 flex items-center gap-2">
-                        <i data-lucide="layers" class="w-4 h-4"></i> Categories
-                    </h3>
-                    <div class="space-y-2">
-                        <a href="#" class="flex items-center justify-between p-3.5 rounded-2xl hover:bg-white dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800 transition-all group">
-                            <span class="flex items-center gap-3 font-bold text-sm text-slate-600 dark:text-slate-300">
-                                <i data-lucide="cpu" class="w-4 h-4 text-blue-500"></i> Technology
-                            </span>
-                            <span class="text-[10px] font-bold text-slate-400">1.2k</span>
-                        </a>
-                        <a href="#" class="flex items-center justify-between p-3.5 rounded-2xl hover:bg-white dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800 transition-all group">
-                            <span class="flex items-center gap-3 font-bold text-sm text-slate-600 dark:text-slate-300">
-                                <i data-lucide="landmark" class="w-4 h-4 text-violet-500"></i> Politics
-                            </span>
-                            <span class="text-[10px] font-bold text-slate-400">840</span>
-                        </a>
-                        <a href="#" class="flex items-center justify-between p-3.5 rounded-2xl hover:bg-white dark:hover:bg-slate-900 border border-transparent hover:border-slate-200 dark:hover:border-slate-800 transition-all group">
-                            <span class="flex items-center gap-3 font-bold text-sm text-slate-600 dark:text-slate-300">
-                                <i data-lucide="gamepad-2" class="w-4 h-4 text-indigo-500"></i> Gaming
-                            </span>
-                            <span class="text-[10px] font-bold text-slate-400">3.1k</span>
-                        </a>
-                    </div>
-                </section>
-
-                <section>
-                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-400 mb-6">Trending Tags</h3>
-                    <div class="flex flex-wrap gap-2">
-                        <span class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] font-bold hover:bg-brand-600 hover:text-white transition cursor-pointer">#AI2026</span>
-                        <span class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] font-bold hover:bg-brand-600 hover:text-white transition cursor-pointer">#RemoteWork</span>
-                        <span class="px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 text-[11px] font-bold hover:bg-brand-600 hover:text-white transition cursor-pointer">#Elections</span>
-                    </div>
-                </section>
-
-                <section class="p-6 rounded-[32px] bg-gradient-to-br from-brand-600 to-indigo-700 text-white shadow-lg shadow-brand-600/20">
-                    <i data-lucide="award" class="w-8 h-8 mb-4 opacity-80"></i>
-                    <h4 class="font-black mb-2">Sphere Trophies</h4>
-                    <p class="text-[11px] opacity-80 leading-relaxed mb-4">Complete 5 daily polls to unlock the "Insight Seeker" badge.</p>
-                    <div class="w-full bg-white/20 h-1.5 rounded-full">
-                        <div class="bg-white h-full w-3/5 rounded-full"></div>
-                    </div>
-                </section>
-            </aside>
-
-            <div class="lg:col-span-9 space-y-16">
-                
-                <section>
-                    <div class="flex items-center justify-between mb-8">
-                        <h2 class="text-2xl font-black tracking-tight">Top Influencers</h2>
-                        <button class="text-xs font-bold text-brand-600">View Rankings</button>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                        <div class="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Alex" class="w-12 h-12 rounded-full bg-slate-200" alt="">
-                            <div>
-                                <h4 class="text-sm font-black">Alex Rivers</h4>
-                                <p class="text-[10px] text-slate-500">14.2k Poll Points</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" class="w-12 h-12 rounded-full bg-slate-200" alt="">
-                            <div>
-                                <h4 class="text-sm font-black">Sarah Chen</h4>
-                                <p class="text-[10px] text-slate-500">12.1k Poll Points</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-4 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan" class="w-12 h-12 rounded-full bg-slate-200" alt="">
-                            <div>
-                                <h4 class="text-sm font-black">Jordan T.</h4>
-                                <p class="text-[10px] text-slate-500">9.8k Poll Points</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section>
-                    <div class="p-8 rounded-[40px] border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 relative overflow-hidden shadow-sm">
-                        <div class="flex justify-between items-center mb-8 relative z-10">
-                            <div>
-                                <h2 class="text-2xl font-black tracking-tight text-slate-800 dark:text-white">Global Pulse</h2>
-                                <p class="text-xs text-slate-500">Live participation from around the world.</p>
-                            </div>
-                            <span class="px-3 py-1 bg-emerald-500/10 text-emerald-500 rounded-full text-[10px] font-black animate-pulse">● 12.8k ACTIVE</span>
-                        </div>
-                        <div class="h-64 w-full bg-slate-50 dark:bg-slate-800/50 rounded-3xl border border-dashed border-slate-200 dark:border-slate-700 flex flex-col items-center justify-center gap-4">
-                            <i data-lucide="globe" class="w-12 h-12 text-slate-300"></i>
-                            <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Interactive Map Component</span>
-                        </div>
-                    </div>
-                </section>
-
-                <section>
-                    <h2 class="text-xl font-black mb-8 flex items-center gap-2">
-                        <i data-lucide="zap" class="w-5 h-5 text-amber-500"></i> Quick Decisions
-                    </h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-xl transition-all">
-                            <h3 class="font-bold text-center mb-6">Will AI replace creative jobs in 5 years?</h3>
-                            <div class="flex gap-4">
-                                <button class="flex-1 py-4 rounded-2xl bg-brand-600 text-white font-black text-xs hover:scale-105 transition">YES</button>
-                                <button class="flex-1 py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 font-black text-xs hover:scale-105 transition">NO</button>
-                            </div>
-                        </div>
-                        <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:shadow-xl transition-all">
-                            <h3 class="font-bold text-center mb-6">Is 4-day work week productive?</h3>
-                            <div class="flex gap-4">
-                                <button class="flex-1 py-4 rounded-2xl bg-brand-600 text-white font-black text-xs hover:scale-105 transition">FACT</button>
-                                <button class="flex-1 py-4 rounded-2xl bg-slate-100 dark:bg-slate-800 font-black text-xs hover:scale-105 transition">CAP</button>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <section>
-                    <h2 class="text-2xl font-black tracking-tight mb-8">Scheduled Debates</h2>
-                    <div class="space-y-4">
-                        <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-brand-500 transition-colors">
-                            <div class="flex items-center gap-6">
-                                <div class="bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-2xl text-center">
-                                    <span class="block text-lg font-black text-brand-600">12</span>
-                                    <span class="text-[10px] font-bold uppercase text-slate-500">MAY</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold">Global Climate Policy: Live Townhall</h4>
-                                    <p class="text-xs text-slate-500">Host: @UnitedSphere • 2.4k set reminders</p>
-                                </div>
-                            </div>
-                            <button class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold transition active:scale-95">Set Reminder</button>
-                        </div>
-                        <div class="p-6 rounded-3xl border border-slate-200 dark:border-slate-800 bg-white/40 dark:bg-slate-900/40 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 hover:border-brand-500 transition-colors">
-                            <div class="flex items-center gap-6">
-                                <div class="bg-slate-100 dark:bg-slate-800 px-4 py-2 rounded-2xl text-center">
-                                    <span class="block text-lg font-black text-brand-600">18</span>
-                                    <span class="text-[10px] font-bold uppercase text-slate-500">MAY</span>
-                                </div>
-                                <div>
-                                    <h4 class="font-bold">The Future of Ethereum vs Solana</h4>
-                                    <p class="text-xs text-slate-500">Host: @CryptoPulse • 4.1k set reminders</p>
-                                </div>
-                            </div>
-                            <button class="w-full sm:w-auto px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-bold transition active:scale-95">Set Reminder</button>
-                        </div>
-                    </div>
-                </section>
-
-                <section class="pb-10">
-                    <div class="p-10 rounded-[40px] bg-slate-900 dark:bg-brand-600 text-white flex flex-col md:flex-row items-center justify-between gap-8 relative overflow-hidden">
-                        <div class="relative z-10">
-                            <h2 class="text-3xl font-black mb-3 leading-tight">Join the Elite <br>Sphere Moderators.</h2>
-                            <p class="text-slate-400 dark:text-brand-100 text-sm max-w-sm">Get verified, earn unique badges, and start managing your own categories.</p>
-                        </div>
-                        <button class="relative z-10 px-10 py-5 bg-white text-slate-900 rounded-2xl font-black text-sm hover:shadow-2xl transition active:scale-95">Apply Now</button>
-                        <div class="absolute -right-10 -top-10 w-48 h-48 bg-white/5 rounded-full blur-3xl"></div>
-                    </div>
-                </section>
-
+            <div class="relative w-full lg:w-[400px] group">
+                <input type="text" placeholder="Search creators, polls, or categories..." 
+                    class="w-full pl-14 pr-6 py-5 rounded-[2rem] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 focus:ring-4 focus:ring-brand-500/10 outline-none transition-all shadow-xl shadow-slate-200/40 dark:shadow-none">
+                <i data-lucide="search" class="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-brand-600 transition-colors"></i>
             </div>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-16">
+            
+            <section class="md:col-span-8 p-10 rounded-[48px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+                <div class="absolute -right-20 -top-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] group-hover:bg-brand-500/20 transition-all"></div>
+                
+                <div class="relative z-10 flex flex-col h-full justify-between">
+                    <div>
+                        <div class="flex items-center gap-3 mb-8">
+                            <span class="px-4 py-1.5 rounded-xl bg-brand-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand-600/20">TRENDING NOW</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Politics • 14k In Debate</span>
+                        </div>
+                        <h2 class="text-3xl md:text-5xl font-black leading-tight dark:text-white max-w-2xl mb-6">
+                            Should Universal Basic Income be funded by an AI-output tax?
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400 text-lg max-w-xl">
+                            As automation scales, governments consider taxing silicon labor to support human survival.
+                        </p>
+                    </div>
+
+                    <div class="mt-12 flex flex-wrap items-center gap-4">
+                        <button class="px-10 py-5 rounded-2xl bg-brand-600 text-white font-black text-xs tracking-widest hover:scale-105 transition shadow-xl shadow-brand-600/30">VOTE NOW</button>
+                        <div class="flex items-center gap-3 px-5 py-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-8 h-8 rounded-full border-2 border-brand-500">
+                            <span class="text-xs font-black dark:text-slate-200">By @felix_v</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="md:col-span-4 p-8 rounded-[48px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="text-xs font-black uppercase tracking-widest text-slate-400">Elite Creators</h3>
+                    <i data-lucide="award" class="w-4 h-4 text-brand-500"></i>
+                </div>
+                
+                <div class="space-y-6">
+                    <div class="flex items-center justify-between group cursor-pointer">
+                        <div class="flex items-center gap-4">
+                            <div class="relative">
+                                <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah" class="w-12 h-12 rounded-full ring-2 ring-violet-500/20 p-0.5">
+                                <div class="absolute -bottom-1 -right-1 w-4 h-4 bg-emerald-500 border-2 border-white dark:border-slate-900 rounded-full"></div>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-black dark:text-white group-hover:text-brand-600 transition-colors">Sarah Chen</h4>
+                                <p class="text-[10px] font-bold text-slate-400">14.2k Influence</p>
+                            </div>
+                        </div>
+                        <button class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-brand-600 transition"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                    </div>
+                    <div class="flex items-center justify-between group cursor-pointer">
+                        <div class="flex items-center gap-4">
+                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan" class="w-12 h-12 rounded-full">
+                            <div>
+                                <h4 class="text-sm font-black dark:text-white group-hover:text-brand-600 transition-colors">Jordan T.</h4>
+                                <p class="text-[10px] font-bold text-slate-400">8.9k Influence</p>
+                            </div>
+                        </div>
+                        <button class="p-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-brand-600 transition"><i data-lucide="plus" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+
+                <button class="w-full mt-10 py-4 rounded-2xl border-2 border-dashed border-slate-100 dark:border-slate-800 text-[10px] font-black uppercase tracking-widest text-slate-400 hover:border-brand-500 hover:text-brand-600 transition-all">View All Rankings</button>
+            </section>
+        </div>
+
+        <section class="space-y-8 mb-16">
+            <div class="flex flex-col md:flex-row md:items-end justify-between px-2 gap-4">
+                <div>
+                    <h2 class="text-3xl font-black tracking-tight dark:text-white">Active <span class="text-brand-600">Spheres</span></h2>
+                    <p class="text-slate-500 text-sm font-medium mt-1">Jump into specialized debate communities.</p>
+                </div>
+                <div class="flex gap-2">
+                    <button class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800"><i data-lucide="chevron-left" class="w-4 h-4 text-slate-400"></i></button>
+                    <button class="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800"><i data-lucide="chevron-right" class="w-4 h-4 text-slate-600"></i></button>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div class="group relative aspect-[4/5] rounded-[48px] bg-gradient-to-br from-blue-600 to-indigo-800 overflow-hidden cursor-pointer shadow-2xl shadow-blue-500/20">
+                    <div class="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors"></div>
+                    <div class="absolute top-8 left-8 p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white">
+                        <i data-lucide="cpu" class="w-6 h-6"></i>
+                    </div>
+                    <div class="absolute bottom-10 left-8 right-8 text-white">
+                        <h3 class="text-2xl font-black mb-2">Technology</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-full bg-white/20 backdrop-blur-sm text-[10px] font-black uppercase tracking-tighter">1.2k Live</span>
+                            <span class="text-[10px] font-bold text-white/60 uppercase">82k Members</span>
+                        </div>
+                    </div>
+                    <i data-lucide="cpu" class="absolute -right-8 -top-8 w-48 h-48 text-white/5 -rotate-12 transition-transform group-hover:scale-110 pointer-events-none"></i>
+                </div>
+
+                <div class="group relative aspect-[4/5] rounded-[48px] bg-gradient-to-br from-rose-500 to-orange-600 overflow-hidden cursor-pointer shadow-2xl shadow-rose-500/20">
+                    <div class="absolute top-8 left-8 p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white">
+                        <i data-lucide="landmark" class="w-6 h-6"></i>
+                    </div>
+                    <div class="absolute bottom-10 left-8 right-8 text-white">
+                        <h3 class="text-2xl font-black mb-2">Politics</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-full bg-black/20 text-[10px] font-black uppercase tracking-tighter">842 Live</span>
+                            <span class="text-[10px] font-bold text-white/60 uppercase">114k Members</span>
+                        </div>
+                    </div>
+                    <i data-lucide="landmark" class="absolute -right-8 -top-8 w-48 h-48 text-white/5 -rotate-12 transition-transform group-hover:scale-110 pointer-events-none"></i>
+                </div>
+
+                <div class="group relative aspect-[4/5] rounded-[48px] bg-gradient-to-br from-emerald-500 to-teal-700 overflow-hidden cursor-pointer shadow-2xl shadow-emerald-500/20">
+                    <div class="absolute top-8 left-8 p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white">
+                        <i data-lucide="gamepad-2" class="w-6 h-6"></i>
+                    </div>
+                    <div class="absolute bottom-10 left-8 right-8 text-white">
+                        <h3 class="text-2xl font-black mb-2">Gaming</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-full bg-black/20 text-[10px] font-black uppercase tracking-tighter">2.4k Live</span>
+                            <span class="text-[10px] font-bold text-white/60 uppercase">32k Members</span>
+                        </div>
+                    </div>
+                    <i data-lucide="gamepad-2" class="absolute -right-8 -top-8 w-48 h-48 text-white/5 -rotate-12 transition-transform group-hover:scale-110 pointer-events-none"></i>
+                </div>
+
+                <div class="group relative aspect-[4/5] rounded-[48px] bg-gradient-to-br from-violet-600 to-fuchsia-800 overflow-hidden cursor-pointer shadow-2xl shadow-violet-500/20">
+                    <div class="absolute top-8 left-8 p-4 rounded-2xl bg-white/10 backdrop-blur-md border border-white/20 text-white">
+                        <i data-lucide="users" class="w-6 h-6"></i>
+                    </div>
+                    <div class="absolute bottom-10 left-8 right-8 text-white">
+                        <h3 class="text-2xl font-black mb-2">Society</h3>
+                        <div class="flex items-center gap-3">
+                            <span class="px-3 py-1 rounded-full bg-black/20 text-[10px] font-black uppercase tracking-tighter">610 Live</span>
+                            <span class="text-[10px] font-bold text-white/60 uppercase">19k Members</span>
+                        </div>
+                    </div>
+                    <i data-lucide="users" class="absolute -right-8 -top-8 w-48 h-48 text-white/5 -rotate-12 transition-transform group-hover:scale-110 pointer-events-none"></i>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            
+            <div class="lg:col-span-1 p-8 rounded-[48px] bg-brand-600 text-white flex flex-col justify-between relative overflow-hidden shadow-xl shadow-brand-600/20">
+                <i data-lucide="globe" class="absolute -right-4 -top-4 w-32 h-32 opacity-10"></i>
+                <div>
+                    <h4 class="text-[10px] font-black uppercase tracking-[0.3em] opacity-70 mb-4">Live Network Status</h4>
+                    <p class="text-4xl font-black leading-none">1.4M</p>
+                    <p class="text-xs font-bold mt-2 opacity-80 uppercase tracking-widest">Votes Cast Today</p>
+                </div>
+                <div class="mt-8 space-y-3">
+                    <div class="flex justify-between text-[10px] font-black uppercase">
+                        <span>Active Nodes</span>
+                        <span>1,240</span>
+                    </div>
+                    <div class="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
+                        <div class="h-full bg-white w-[85%]"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-2 p-8 rounded-[48px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center gap-8">
+                <div class="flex-1">
+                    <div class="flex items-center gap-2 mb-4">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        <span class="text-[10px] font-black uppercase text-slate-400">Just Created</span>
+                    </div>
+                    <h3 class="text-xl font-black dark:text-white mb-4 italic leading-tight">
+                        "Is 2026 the year VR finally kills the office?"
+                    </h3>
+                    <div class="flex items-center gap-4">
+                        <button class="px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest">Cast First Vote</button>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">5m ago • @tech_guru</span>
+                    </div>
+                </div>
+                <div class="w-32 h-32 rounded-3xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
+                    <i data-lucide="zap" class="w-12 h-12 text-brand-500"></i>
+                </div>
+            </div>
+
         </div>
     </main>
 </div>
