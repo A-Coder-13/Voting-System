@@ -31,32 +31,34 @@
         </header>
 
         <div class="grid grid-cols-1 md:grid-cols-12 gap-8 mb-16">
-            
+
             <section class="md:col-span-8 p-10 rounded-[48px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
+                <a href="{% url 'voting_pole' trending_ques.ques.id  %}">
                 <div class="absolute -right-20 -top-20 w-80 h-80 bg-brand-500/10 rounded-full blur-[100px] group-hover:bg-brand-500/20 transition-all"></div>
                 
                 <div class="relative z-10 flex flex-col h-full justify-between">
                     <div>
                         <div class="flex items-center gap-3 mb-8">
                             <span class="px-4 py-1.5 rounded-xl bg-brand-600 text-white text-[10px] font-black uppercase tracking-widest shadow-lg shadow-brand-600/20">TRENDING NOW</span>
-                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Politics • 14k In Debate</span>
+                            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{trending_ques.ques.cat_id.category}} • {{trending_ques.in_debate|default:"14k"}} In Debate</span>
                         </div>
                         <h2 class="text-3xl md:text-5xl font-black leading-tight dark:text-white max-w-2xl mb-6">
-                            Should Universal Basic Income be funded by an AI-output tax?
+                            {{trending_ques.ques.ques}}
                         </h2>
                         <p class="text-slate-500 dark:text-slate-400 text-lg max-w-xl">
-                            As automation scales, governments consider taxing silicon labor to support human survival.
+                            {{trending_ques.ques.q_desc}}
                         </p>
                     </div>
 
                     <div class="mt-12 flex flex-wrap items-center gap-4">
-                        <button class="px-10 py-5 rounded-2xl bg-brand-600 text-white font-black text-xs tracking-widest hover:scale-105 transition shadow-xl shadow-brand-600/30">VOTE NOW</button>
+                        <a href="{% url 'voting_pole' trending_ques.ques.id  %}" class="px-10 py-5 rounded-2xl bg-brand-600 text-white font-black text-xs tracking-widest hover:scale-105 transition shadow-xl shadow-brand-600/30">VOTE NOW</a>
                         <div class="flex items-center gap-3 px-5 py-3 bg-slate-50 dark:bg-slate-800 rounded-2xl border border-slate-100 dark:border-slate-700">
-                            <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Felix" class="w-8 h-8 rounded-full border-2 border-brand-500">
-                            <span class="text-xs font-black dark:text-slate-200">By @felix_v</span>
+                            <img src="{%if trending_ques.ques.u_id.profile.profile_picture%}{{trending_ques.ques.u_id.profile.profile_picture.url}}{% else %}https://i.pravatar.cc/100?u={{ trending_ques.ques.u_id }}{% endif %}" class="w-8 h-8 rounded-full border-2 border-brand-500">
+                            <span class="text-xs font-black dark:text-slate-200">By @{{trending_ques.ques.u_id.username}}</span>
                         </div>
                     </div>
                 </div>
+                </a>
             </section>
 
             <section class="md:col-span-4 p-8 rounded-[48px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
@@ -173,37 +175,39 @@
                 <i data-lucide="globe" class="absolute -right-4 -top-4 w-32 h-32 opacity-10"></i>
                 <div>
                     <h4 class="text-[10px] font-black uppercase tracking-[0.3em] opacity-70 mb-4">Live Network Status</h4>
-                    <p class="text-4xl font-black leading-none">1.4M</p>
+                    <p class="text-4xl font-black leading-none">{{votes_today|default:'1.4M'}}</p>
                     <p class="text-xs font-bold mt-2 opacity-80 uppercase tracking-widest">Votes Cast Today</p>
                 </div>
                 <div class="mt-8 space-y-3">
                     <div class="flex justify-between text-[10px] font-black uppercase">
                         <span>Active Nodes</span>
-                        <span>1,240</span>
+                        <span>{{active_poles}}</span>
                     </div>
                     <div class="h-1.5 w-full bg-white/20 rounded-full overflow-hidden">
-                        <div class="h-full bg-white w-[85%]"></div>
+                        <div class="h-full bg-white w-[{{active_poles_persentage}}%]"></div>
                     </div>
                 </div>
             </div>
 
-            <div class="lg:col-span-2 p-8 rounded-[48px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col md:flex-row items-center gap-8">
+            <div class="lg:col-span-2 p-8 rounded-[48px] bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm ">
+                <a href="{% url 'voting_pole' just_created.id  %}" class="flex flex-col md:flex-row items-center gap-8">
                 <div class="flex-1">
                     <div class="flex items-center gap-2 mb-4">
                         <div class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
                         <span class="text-[10px] font-black uppercase text-slate-400">Just Created</span>
                     </div>
                     <h3 class="text-xl font-black dark:text-white mb-4 italic leading-tight">
-                        "Is 2026 the year VR finally kills the office?"
+                        {{just_created.ques}}
                     </h3>
                     <div class="flex items-center gap-4">
                         <button class="px-6 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-[10px] font-black uppercase tracking-widest">Cast First Vote</button>
-                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">5m ago • @tech_guru</span>
+                        <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{just_created.created_at|timesince}} ago • @{{just_created.u_id.username}}</span>
                     </div>
                 </div>
                 <div class="w-32 h-32 rounded-3xl bg-slate-50 dark:bg-slate-800 flex items-center justify-center">
                     <i data-lucide="zap" class="w-12 h-12 text-brand-500"></i>
                 </div>
+            </a>
             </div>
 
         </div>

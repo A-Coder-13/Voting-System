@@ -1,7 +1,8 @@
 Explore pg logics
-1. Trending quest: by calculating all its votes likes coments 
-2. Trending authors:
-3. Search Bar Logics: 
-4. Trending Categories:
-5. Todays vote cast and Active Poles
-6. latest creates Pole
+1. Trending quest: by calculating all its votes likes coments (Done)
+5. Todays vote cast and Active Poles: (Done)
+6. latest creates Pole: (Done)
+2. Trending authors: op users based on: followers, total votes received, number of questions (💡 UI behavior:Clicking → go to profile page, "+" button → follow user)
+3. Search Bar Logics:
+4. Trending Categories:  Your Category model by calculating question in anonate and redirect feed wuth that cat
+7. Members: Users who posted in this category
